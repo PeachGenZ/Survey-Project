@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const Single = () => {
+    const [data, setData] = useState({});
+
+	useEffect(() => {
+		async function fetchData() {
+			const response = await axios.get('http://localhost:4000/api');
+			setData(response.data);
+		}
+
+		fetchData();
+		return () => {};
+	}, []);
+
     return(
       <div className= "container text-center" style={{ marginTop: `100px` }}>
           <h1>ผลลัพธ์</h1>
@@ -24,6 +37,13 @@ const Single = () => {
                 </div>
             </div>
           </div>
+          <p>{data.message}</p>
+		  <ul>
+			{data.users && data.users.map(user => {
+					return <li key={user.id}>{user.name}</li>;
+					})
+            }
+		  </ul>
       </div>
     )
 }

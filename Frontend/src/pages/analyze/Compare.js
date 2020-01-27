@@ -7,8 +7,8 @@ const Compare = () => {
           <div className="container card" style={{width: '60%', marginTop: `25px`}}>
             <h3>รูปแบบการแสดงผล</h3>
             <div className = "row">
-                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginRight: '50px'}}>แสดงผลรวม</button></a>
-                    <a href='/compare'><button type="button" className="btn btn-success btn-lg">แสดงผลเปรียบเทียบ</button></a>
+                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '130px'}}>แสดงผลรวม</button></a>
+                    <a href='/compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงผลเปรียบเทียบ</button></a>
             </div>
             <div className="container-fluid">
                 <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>

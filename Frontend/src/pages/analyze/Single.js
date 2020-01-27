@@ -6,7 +6,7 @@ const Single = () => {
 
 	useEffect(() => {
 		async function fetchData() {
-			const response = await axios.get('http://localhost:4000/api');
+			const response = await axios.get('http://127.0.0.1:4013/echo?msg=Srithep');
 			setData(response.data);
 		}
 
@@ -20,8 +20,8 @@ const Single = () => {
           <div className="container card" style={{width: '60%', marginTop: `25px`}}>
             <h3>รูปแบบการแสดงผล</h3>
             <div className = "row">
-                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginRight: '50px'}}>แสดงผลรวม</button></a>
-                    <a href='/compare'><button type="button" className="btn btn-success btn-lg">แสดงผลเปรียบเทียบ</button></a>
+                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '130px'}}>แสดงผลรวม</button></a>
+                    <a href='/compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงผลเปรียบเทียบ</button></a>
             </div>
             <div className="container-fluid">
                 <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
@@ -37,13 +37,9 @@ const Single = () => {
                 </div>
             </div>
           </div>
-          <p>{data.message}</p>
-		  <ul>
-			{data.users && data.users.map(user => {
-					return <li key={user.id}>{user.name}</li>;
-					})
-            }
-		  </ul>
+          <div style={{ marginTop: `100px` }}>
+            <h3>{data.msg}</h3>
+          </div>
       </div>
     )
 }

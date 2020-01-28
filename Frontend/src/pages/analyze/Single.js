@@ -1,47 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
+import Table from '../../components/Table1.js';
 import axios from 'axios';
+import SingleControl from '../../components/SingleControl.js';
 
-const Single = () => {
-    const [data, setData] = useState({});
+class Single extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            tableData: []
+        };
+    }
 
-	useEffect(() => {
-		async function fetchData() {
-			const response = await axios.get('http://127.0.0.1:4013/echo?msg=Srithep');
-			setData(response.data);
-		}
+    componentDidMount () {
+        axios.get('http://127.0.0.1:3999/createmodel', {
+            responseType: 'json'
+        }).then(response => {
+            this.setState({ tableData: response.data.survey });
+        });
+    }
 
-		fetchData();
-		return () => {};
-	}, []);
-
+  render() {
     return(
-      <div className= "container text-center" style={{ marginTop: `100px` }}>
-          <h1>ผลลัพธ์</h1>
-          <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-            <h3>รูปแบบการแสดงผล</h3>
-            <div className = "row">
-                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '130px'}}>แสดงผลรวม</button></a>
-                    <a href='/compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงผลเปรียบเทียบ</button></a>
-            </div>
-            <div className="container-fluid">
-                <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        เลือกกลุ่มตัวอย่าง
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">นักเรียน</button>
-                        <button class="dropdown-item" type="button">ข้าราชการ</button>
-                        <button class="dropdown-item" type="button">อาจารย์</button>
-                    </div>
-                </div>
-            </div>
+      <div className= "container" style={{ marginTop: `50px` }}>
+          <div className="text-center">
+            <h1>ผลลัพธ์</h1>
+            <SingleControl />
           </div>
-          <div style={{ marginTop: `100px` }}>
-            <h3>{data.msg}</h3>
+          <div style={{ marginTop: '60px' }}>
+            <Table tableData={ this.state.tableData } />
           </div>
       </div>
     )
+  }
 }
 
 export default Single;

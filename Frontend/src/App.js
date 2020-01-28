@@ -4,6 +4,9 @@ import NotFound from './pages/error/NotFound';
 import Survey from './pages/Survey';
 import Single from './pages/analyze/Single';
 import Compare from './pages/analyze/Compare';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import './App.css'
 
 class App extends Component {
 
@@ -20,9 +23,16 @@ class App extends Component {
 
   render() {
     return (
-      <BrowserRouter>{this.renderRouter()}</BrowserRouter>
+      <BrowserRouter>
+      <div>
+        <Header />
+        {this.renderRouter()}
+        <Footer />
+      </div>
+      </BrowserRouter>
     );
   }
+    
 }
 
 export default App;

@@ -2,7 +2,7 @@ import React from 'react';
 
 const Table = ({ tableData }) => {
     return (
-        <table class="table table-bordered">
+        <table className="table table-bordered">
         <thead>
           <tr>
             <th scope="col">หัวข้อ</th>

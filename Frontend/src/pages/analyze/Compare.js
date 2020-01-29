@@ -12,24 +12,24 @@ const Compare = () => {
             </div>
             <div className="container-fluid">
                 <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div className="dropdown">
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         เลือกกลุ่มตัวอย่าง 1
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">นักเรียน</button>
-                        <button class="dropdown-item" type="button">ข้าราชการ</button>
-                        <button class="dropdown-item" type="button">อาจารย์</button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button className="dropdown-item" type="button">นักเรียน</button>
+                        <button className="dropdown-item" type="button">ข้าราชการ</button>
+                        <button className="dropdown-item" type="button">อาจารย์</button>
                     </div>
                 </div>
-                <div class="dropdown" style={{marginTop: `10px`}}>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <div className="dropdown" style={{marginTop: `10px`}}>
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         เลือกกลุ่มตัวอย่าง 2
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">นักเรียน</button>
-                        <button class="dropdown-item" type="button">ข้าราชการ</button>
-                        <button class="dropdown-item" type="button">อาจารย์</button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <button className="dropdown-item" type="button">นักเรียน</button>
+                        <button className="dropdown-item" type="button">ข้าราชการ</button>
+                        <button className="dropdown-item" type="button">อาจารย์</button>
                     </div>
                 </div>
             </div>

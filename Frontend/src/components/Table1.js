@@ -2,11 +2,11 @@ import React from 'react';
 
 const Table = ({ tableData }) => {
     return (
-        <table class="table table-bordered">
+        <table className="table table-bordered">
         <thead>
           <tr>
             <th scope="col">ลำดับ</th>
-            <th scope="col" class="text-center">คำถาม</th>
+            <th scope="col" className="text-center">คำถาม</th>
             <th scope="col">คะแนนรวม</th>
             <th scope="col">ค่าเฉลี่ยคะแนน</th>
             <th scope="col">ส่วนเบี่ยงมาตรฐาน</th>
@@ -17,7 +17,7 @@ const Table = ({ tableData }) => {
         { (tableData.length > 0) ? tableData.map( (tableData, index) => {
            return (
             <tr key={ index }>
-              <td class="text-center">{ index+1 }</td>
+              <td className="text-center">{ index+1 }</td>
               <td>{ tableData.topic }</td>
               <td>{ tableData.choice1 }</td>
               <td>{ tableData.mean }</td>

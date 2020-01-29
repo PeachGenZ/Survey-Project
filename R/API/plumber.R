@@ -1,5 +1,5 @@
 library(plumber)
-
+library(readr)
 #* @apiTitle Plumber Example API
 
 #* @get /createmodel
@@ -17,7 +17,7 @@ createDataModel <- function() {
   choice3 <- c(22,30,20,20,20)
   choice4 <- c(15,30,5,20,10)
   choice5 <- c(30,10,15,20,50)
-  mean <- c(3.48,3,3.62,3,2.2)
+  mean <- c(3.48,3.00,3.62,3.00,2.20)
   total <- choice1 + choice2 + choice3 + choice4 + choice5
   
   my_df <- data.frame(topic, choice1, choice2, choice3, choice4, choice5, total, mean)
@@ -52,3 +52,9 @@ cors <- function(res) {
     res$setHeader("Access-Control-Allow-Origin", "*") 
     plumber::forward()
 }
+
+#* read thai string
+Sys.setlocale("LC_CTYPE", "Thai")
+options(encoding="UTF-8")
+
+

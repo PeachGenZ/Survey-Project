@@ -13,7 +13,7 @@ class Single extends Component {
     }
 
     componentDidMount () {
-        axios.get('http://127.0.0.1:4761/createmodel', {
+        axios.get('http://127.0.0.1:8888/createmodel', {
             responseType: 'json'
         }).then(response => {
             this.setState({ tableData: response.data.survey });

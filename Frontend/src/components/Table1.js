@@ -17,7 +17,7 @@ const Table = ({ tableData }) => {
         { (tableData.length > 0) ? tableData.map( (tableData, index) => {
            return (
             <tr key={ index }>
-              <td>{ index+1 }</td>
+              <td class="text-center">{ index+1 }</td>
               <td>{ tableData.topic }</td>
               <td>{ tableData.choice1 }</td>
               <td>{ tableData.mean }</td>

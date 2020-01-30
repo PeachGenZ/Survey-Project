@@ -1,41 +1,42 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Table from '../../components/Table1.js';
+import axios from 'axios';
+import Tab from '../../components/Tab.js';
+import CompareControl from '../../components/CompareControl.js';
 
-const Compare = () => {
+class Compare extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            tableData: []
+        };
+    }
+
+    componentDidMount () {
+        axios.get('http://127.0.0.1:8888/createmodel', {
+            responseType: 'json'
+        }).then(response => {
+            this.setState({ tableData: response.data.survey });
+        });
+    }
+
+  render() {
     return(
-      <div className= "container text-center" style={{ marginTop: `100px` }}>
-          <h1>ผลลัพธ์</h1>
-          <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-            <h3>รูปแบบการแสดงผล</h3>
-            <div className = "row">
-                    <a href='/single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '130px'}}>แสดงผลรวม</button></a>
-                    <a href='/compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงผลเปรียบเทียบ</button></a>
-            </div>
-            <div className="container-fluid">
-                <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                <div className="dropdown">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        เลือกกลุ่มตัวอย่าง 1
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button className="dropdown-item" type="button">นักเรียน</button>
-                        <button className="dropdown-item" type="button">ข้าราชการ</button>
-                        <button className="dropdown-item" type="button">อาจารย์</button>
-                    </div>
-                </div>
-                <div className="dropdown" style={{marginTop: `10px`}}>
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        เลือกกลุ่มตัวอย่าง 2
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button className="dropdown-item" type="button">นักเรียน</button>
-                        <button className="dropdown-item" type="button">ข้าราชการ</button>
-                        <button className="dropdown-item" type="button">อาจารย์</button>
-                    </div>
-                </div>
-            </div>
+      <div className= "container" style={{ marginTop: `50px` }}>
+          <div className="text-center">
+            <h1>ผลลัพธ์</h1>
+            <Tab />
+            <CompareControl />
+          </div>
+          <div style={{ marginTop: '60px' }}>
+            <h1 className="text-center">กลุ่มตัวอย่างที่ 1</h1>
+            <Table tableData={ this.state.tableData } />
+            <h1 className="text-center">กลุ่มตัวอย่างที่ 2</h1>
+            <Table tableData={ this.state.tableData } />
           </div>
       </div>
     )
+  }
 }
 
 export default Compare;

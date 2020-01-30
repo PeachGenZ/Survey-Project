@@ -1,5 +1,8 @@
 library(plumber)
 library(readr)
+library(ggplot2)
+library(psych)
+
 #* @apiTitle Plumber Example API
 
 #* @get /createmodel
@@ -37,6 +40,12 @@ function(msg=""){
 function(){
   rand <- rnorm(100)
   hist(rand)
+  
+  pc <- principal(Harman74.cor$cov, 4, rotate="varimax")
+  loadings <- as.data.frame(pc$loadings[, 1:ncol(pc$loadings)])
+  loadings$my_df.topic <- rownames(loadings)
+  
+  ggplot(aes(topic, mean)) + geom_bar() + coord_flip() + theme_bw(base_size=10)
 }
 
 #* Return the sum of two numbers

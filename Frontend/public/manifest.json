@@ -1,6 +1,6 @@
 {
-  "short_name": "SurveyJS",
-  "name": "ระบบวิเคราะห์ข้อมูลแบบสอบถามเพื่อการวิจัย",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",

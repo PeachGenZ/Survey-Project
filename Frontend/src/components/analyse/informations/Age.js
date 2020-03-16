@@ -49,12 +49,16 @@ class Age extends Component {
       if(this.state.answers[i].resultAsString.widgetAges === '42-47'){
         age4247++
       }
-      if(this.state.answers[i].resultAsString.widgetAges === "48-53"){
+      if(this.state.answers[i].resultAsString.widgetAges === '48-53'){
         age4853++
       }
-      if(this.state.answers[i].resultAsString.widgetAges === "54-60"){
+      if(this.state.answers[i].resultAsString.widgetAges === '54-60'){
         age5460++
       }
+      if(this.state.answers[i].resultAsString.widgetAges === 'more60'){
+        age60++
+      }
+      
     }
     total=age1823+age2429+age3035+age3641+age4247+age4853+age5460+age60
     dataAge.push(
@@ -99,47 +103,47 @@ class Age extends Component {
                     <tr>
                       <td className="text-center">18 - 23</td>
                       <td className="text-center">{age1823}</td>
-                      <td className="text-center">{((age1823/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age1823/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">24 - 29</td>
                       <td className="text-center">{age2429}</td>
-                      <td className="text-center">{((age2429/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age2429/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">30 - 35</td>
                       <td className="text-center">{age3035}</td>
-                      <td className="text-center">{((age3035/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age3035/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">36 - 41</td>
                       <td className="text-center">{age3641}</td>
-                      <td className="text-center">{((age3641/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age3641/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">42 - 47</td>
                       <td className="text-center">{age4247}</td>
-                      <td className="text-center">{((age4247/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age4247/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">48 - 53</td>
                       <td className="text-center">{age4853}</td>
-                      <td className="text-center">{((age4853/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age4853/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">54 - 60</td>
                       <td className="text-center">{age5460}</td>
-                      <td className="text-center">{((age5460/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age5460/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">มากกว่า 60 ปี</td>
                       <td className="text-center">{age60}</td>
-                      <td className="text-center">{((age60/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((age60/total)*100).toFixed(2)}</td>
                     </tr>
                     <tr>
                       <td className="text-center">รวมทั้งหมด</td>
                       <td className="text-center">{total}</td>
-                      <td className="text-center">{((total/total)*100).toFixed(0)}</td>
+                      <td className="text-center">{((total/total)*100).toFixed(2)}</td>
                     </tr>
                 </tbody>
             </table>

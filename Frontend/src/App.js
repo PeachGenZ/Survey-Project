@@ -24,6 +24,7 @@ import Single from './views/analyse/analyse/Single'
 import Compare from './views/analyse/analyse/Compare'
 import Informations from './views/analyse/analyse/Informations'
 import Proportion from './views/analyse/analyse/Proportion'
+import Report from './views/analyse/analyse/Report'
 
 
 class App extends Component {
@@ -98,6 +99,7 @@ class App extends Component {
         <Route exact path="/survey-management/:surveyId/analyse/compare" component={Compare} />
         <Route exact path="/survey-management/:surveyId/analyse/informations" component={Informations} />
         <Route exact path="/survey-management/:surveyId/analyse/proportion" component={Proportion} />
+        <Route exact path="/survey-management/:surveyId/analyse/report" component={Report} />
       </Switch>
     )
   }

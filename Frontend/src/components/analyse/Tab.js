@@ -15,7 +15,7 @@ class Tab extends Component  {
                         <a className="nav-link" href="proportion"><h5>สัดส่วน</h5></a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href=""><h5>ผลลัพธ์รายบุคคล</h5></a>
+                        <a className="nav-link" href="report"><h5>ผลลัพธ์รายบุคคล</h5></a>
                     </li>
                 </ul>
             </div>

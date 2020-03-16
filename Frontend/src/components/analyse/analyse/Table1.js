@@ -8,6 +8,7 @@ class Table1 extends Component {
         survey: "",
         data: "",
         result:{},
+        answerId:"",
         answers:"",
         amountAnswer:"",
     }
@@ -22,7 +23,7 @@ class Table1 extends Component {
               survey: response.data,
               data: JSON.parse(response.data.data),
           })                           
-          console.log(this.state.data)
+          //console.log(this.state.data)
       })
       .catch((error) => {
           console.log(error);
@@ -31,17 +32,18 @@ class Table1 extends Component {
     axios.get(`http://localhost:5000/answers/find/` + surveyId)
     .then(response => {
         this.setState({
-          answers: response.data[0].answerUsers,
+          answerId:response.data[0]._id,
+          answers:response.data[0].answerUsers,
           amountAnswer:response.data[0].amountAnswer,
         })
-        //console.log(this.state.answers)
+        //console.log(response.data[0]._id)
     })
     .catch((error) => {
         console.log(error);
     })
   }
 
-  prePrecess(){
+  preProcess(){
     //ฟังก์ชันนี้เป็นการนับคะแนนที่กระจัดกระจายอยู่แล้วรวมเป็น object เดียว
     let length=0
     let resultArray=[]
@@ -144,12 +146,27 @@ class Table1 extends Component {
     return rArray
   }
 
+  sendData(preProcess,result){
+    const answerId = this.state.answerId
+    const surveyId = this.props.surveyId
+    const createAnalyse = {
+      answerId:answerId,
+      surveyId:surveyId,
+      preProcess:preProcess,
+      result:result,
+      amountAnswer:this.state.amountAnswer
+    }
+    //console.log(createAnalyse)
+    axios.post('http://localhost:5000/analyse/create', createAnalyse)
+  }
+
   render(){
     //ลอง setState แล้วค่าไม่ยอมอัพเดทเลยเอาตัวแปรมารับแทน
-    let prePrecess = this.prePrecess()
-    let result = this.getResult(prePrecess)
-    console.log(prePrecess)
-    console.log(result)
+    let preProcess = this.preProcess()
+    let result = this.getResult(preProcess)
+    this.sendData(preProcess,result)
+    //console.log(preProcess)
+    //console.log(result)
     return (
       <div>
         <table className="table table-bordered">

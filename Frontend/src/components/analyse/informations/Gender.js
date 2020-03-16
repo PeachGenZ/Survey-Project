@@ -21,38 +21,28 @@ class Gender extends Component {
     })
   }
 
-  /*countGender(){
-    let male = 0
-    let female = 0
-    let total = 0
-    for (let i = 0; i < this.state.answers.length; i++) {
-      if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
-        male++
-      }
-      if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
-        female++
-      }
-    }
-  }*/
-
   countMale(){
     let male = 0
-    for (let i = 0; i < this.state.answers.length; i++) {
-      if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
-        male++
+    if(this.state.answers){
+      for (let i = 0; i < this.state.answers.length; i++) {
+        if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
+          male++
+        }
       }
+      return male
     }
-    return male
   }
 
   countFemale(){
     let female = 0
-    for (let i = 0; i < this.state.answers.length; i++) {
-      if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
-        female++
+    if(this.state.answers){
+      for (let i = 0; i < this.state.answers.length; i++) {
+        if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
+          female++
+        }
       }
+      return female
     }
-    return female
   }
 
   render(){
@@ -61,7 +51,8 @@ class Gender extends Component {
     let total = male + female
     return (
       <div>
-        <h1>{((male/total)*100).toFixed(0)}% <span style={{ marginLeft: '33%' }}>{((female/total)*100).toFixed(0)}%</span></h1>
+        <h1>{(male) ? ((male/total)*100).toFixed(0)+"%" : ""}
+        <span style={{ marginLeft: '33%' }}>{(female) ? ((female/total)*100).toFixed(0)+"%" : ""}</span></h1>
         <h3 style={{ margin: '2%' }}>เพศ</h3>
         <table className="table table-bordered">
         <thead>

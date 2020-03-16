@@ -33,37 +33,38 @@ class Age extends Component {
     let age60=0
     let total=0
     let dataAge=[]
-    for (let i = 0; i < this.state.answers.length; i++) {
-      if(this.state.answers[i].resultAsString.widgetAges === '18-23'){
-        age1823++
+    if(this.state.answers){
+      for (let i = 0; i < this.state.answers.length; i++) {
+        if(this.state.answers[i].resultAsString.widgetAges === '18-23'){
+          age1823++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '24-29'){
+          age2429++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '30-35'){
+          age3035++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '36-41'){
+          age3641++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '42-47'){
+          age4247++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '48-53'){
+          age4853++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === '54-60'){
+          age5460++
+        }
+        if(this.state.answers[i].resultAsString.widgetAges === 'more60'){
+          age60++
+        }
       }
-      if(this.state.answers[i].resultAsString.widgetAges === '24-29'){
-        age2429++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === '30-35'){
-        age3035++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === '36-41'){
-        age3641++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === '42-47'){
-        age4247++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === '48-53'){
-        age4853++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === '54-60'){
-        age5460++
-      }
-      if(this.state.answers[i].resultAsString.widgetAges === 'more60'){
-        age60++
-      }
-      
+      total=age1823+age2429+age3035+age3641+age4247+age4853+age5460+age60
+      dataAge.push(
+        age1823,age2429,age3035,age3641,age4247,age4853,age5460,age60
+      )
     }
-    total=age1823+age2429+age3035+age3641+age4247+age4853+age5460+age60
-    dataAge.push(
-      age1823,age2429,age3035,age3641,age4247,age4853,age5460,age60
-    )
 
     const data = {
         labels: ['18 - 23 ปี', '24 - 29 ปี', '30 - 35 ปี', '36 - 41 ปี', '42 - 47 ปี', '48 - 53 ปี', '54 - 60 ปี', 'มากกว่า 60 ปี'],

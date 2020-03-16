@@ -33,6 +33,7 @@ const requestRouter = require('./routes/requests');
 const frequencyRouter = require('./routes/frequency');
 const followResultRouter = require('./routes/followResult');
 const sampleGroupsRouter = require('./routes/sampleGroups');
+const analyseRouter = require('./routes/analyse');
 
 
 app.use('/users', usersRouter);
@@ -44,6 +45,7 @@ app.use('/requests', requestRouter);
 app.use('/frequency', frequencyRouter);
 app.use('/followResults', followResultRouter);
 app.use('/sampleGroups', sampleGroupsRouter);
+app.use('/analyse', analyseRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

@@ -22,7 +22,7 @@ class Table1 extends Component {
               survey: response.data,
               data: JSON.parse(response.data.data),
           })                           
-          //console.log(this.state.data)
+          console.log(this.state.data)
       })
       .catch((error) => {
           console.log(error);
@@ -148,8 +148,8 @@ class Table1 extends Component {
     //ลอง setState แล้วค่าไม่ยอมอัพเดทเลยเอาตัวแปรมารับแทน
     let prePrecess = this.prePrecess()
     let result = this.getResult(prePrecess)
-    //console.log(prePrecess)
-    //console.log(result)
+    console.log(prePrecess)
+    console.log(result)
     return (
       <div>
         <table className="table table-bordered">
@@ -169,9 +169,9 @@ class Table1 extends Component {
               <tr key={ index }>
                 <td className="text-center">{ index+1 }</td>
                 <td className="text-center">{data.name}</td>
-                <td className="text-center">{data.score.toFixed(2)}</td>
-                <td className="text-center">{data.mean.toFixed(2)}</td>
-                <td className="text-center">{data.sd.toFixed(2)}</td>
+                <td className="text-center">{(data.score) ? data.score.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
+                <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
+                <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
                 <td className="text-center">-</td>
               </tr>
             )

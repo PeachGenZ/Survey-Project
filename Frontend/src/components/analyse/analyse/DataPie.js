@@ -1,9 +1,76 @@
 import React, { Component } from 'react';
 import {Pie} from 'react-chartjs-2';
+import axios from 'axios';
 
 class DataPie extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      result:"",
+    }
+  }
+
+  componentDidMount () {
+    const surveyId = this.props.surveyId;
+    axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+      .then(response => {
+          this.setState({
+              result:response.data[0].preProcess,
+          })                           
+          console.log(this.state.result)
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+  }
+
+  getDataPie(){
+    let dataPie=[]
+    if(this.state.result){
+      for(let i=0; i<this.state.result.length; i++){
+        let topic=""
+        let choices=[]
+        let select=[]
+        if(this.state.result[i].title){
+          topic = this.state.result[i].title
+        }else{
+          topic = this.state.result[i].name
+        }
+
+        for(let j=0; j<this.state.result[i].choicesArray.length; j++){
+          choices.push(this.state.result[i].choicesArray[j].text)
+          select.push(this.state.result[i].choicesArray[j].select)
+        }
+        
+        let data = {
+          labels: choices,
+          datasets: [{
+              data: select,
+              backgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+              '#FFCE56',
+              '#69ff6c',
+              '#ffb27a'
+              ],
+              hoverBackgroundColor: [
+              '#FF6384',
+              '#36A2EB',
+              '#FFCE56',
+              '#69ff6c',
+              '#ffb27a',
+              ]
+          }]
+        };
+        dataPie.push(
+          <div style={{ margin: '5%' }}>
+            <h3>{i+1}.{topic}</h3>
+            <Pie data={data} height={80}/>
+          </div>
+        )
+      }
+    }
+    return dataPie
   }
 
   render(){
@@ -83,14 +150,9 @@ class DataPie extends Component {
     
     return (
         <div className="chart">
-            <h3>1.มีไข้</h3>
-            <Pie data={data} 
-              height={80}/>
-            <h3 style={{ marginTop: '5%' }}>2.มีอาการใดบ้าง</h3>
-            <Pie data={data1} height={80}/>
+            {this.getDataPie()}
         </div>
     );
   }
 }
-  
   export default DataPie

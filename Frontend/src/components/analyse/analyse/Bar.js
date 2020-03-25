@@ -1,28 +1,55 @@
 import React, { Component } from 'react';
 import {HorizontalBar} from 'react-chartjs-2';
+import axios from 'axios'
 
 class Bar extends Component {
   constructor(props){
     super(props)
-  }
-  mapTopic() {
-    if(this.state.data){
-      return this.state.data.map(data =>(
-        <Bar topic={data.topic}/>
-      ))
+    this.state = {
+      result:"",
     }
+  }
+
+  componentDidMount () {
+    const surveyId = this.props.surveyId;
+    axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+      .then(response => {
+          this.setState({
+              result:response.data[0].result,
+          })                           
+          //console.log(this.state.result)
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+  }
+  
+  getLabels(){
+    let labels=[]
+    if(this.state.result){
+      for(let i=0; i<this.state.result.length; i++){
+        labels.push(this.state.result[i].name)
+      }
+    }
+    return labels
+  }
+
+  getData(){
+    let value=[]
+    if(this.state.result){
+      for(let i=0; i<this.state.result.length; i++){
+        value.push(this.state.result[i].mean.toFixed(3))
+      }
+    }
+    return value
   }
 
   render(){
-    let topic = []
-    for (var i = 0; i < this.props.data.length; i++) {
-      topic.push(
-        this.props.data[i].topic
-      );
-    }
+    let labels=this.getLabels()
+    let value=this.getData()
 
     const data = {
-        labels:topic,
+        labels: labels,
         datasets: [
             {
               label: 'กลุ่มตัวอย่างที่ 1',
@@ -31,7 +58,7 @@ class Bar extends Component {
               borderWidth: 1,
               hoverBackgroundColor: 'rgba(255,99,132,0.4)',
               hoverBorderColor: 'rgba(255,99,132,1)',
-              data: [3.48, 3, 3.62, 3, 2.2, 3.85, 4.5, 3.15]
+              data: value
             },
         ]
     };
@@ -39,7 +66,6 @@ class Bar extends Component {
         <div className="chart">
             <h2>แผนภูมิที่พล็อตจากค่าเฉลี่ย</h2>
             <HorizontalBar data={data}/>
-            {console.log(topic)}
         </div>
     );
     

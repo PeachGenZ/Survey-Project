@@ -34,28 +34,34 @@ class SingleControl extends Component {
 
     render(){
         return (
-            <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-                    <h3 style={{marginTop: `15px`}}>รูปแบบการแสดงผล</h3>
-                <div className = "row" style={{marginTop: `15px`}}>
-                    <a href='single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '125px'}}>แสดง 1 กลุ่มตัวอย่าง</button></a>
-                    <a href='compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงทุกกลุ่มตัวอย่าง</button></a>
+            <div>
+                <div className="container card" style={{width: '60%', marginTop: `25px`}}>
+                        <h3 style={{marginTop: `15px`}}>รูปแบบการแสดงผล</h3>
+                    <div className = "row" style={{marginTop: `15px`,marginBottom: `20px`}}>
+                        <a href='single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '125px'}}>แสดง 1 กลุ่มตัวอย่าง</button></a>
+                        <a href='compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงทุกกลุ่มตัวอย่าง</button></a>
+                    </div>
                 </div>
-                <div className="container-fluid">
-                    <hr/>
-                    <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                        <div className="dropdown" style={{marginTop: `15px`}}>
-                            <DropdownButton id="dropdown-basic-button" title="เลือกกลุ่มตัวอย่าง" variant="light">
-                                <Dropdown.Item href="#/action-1">กลุ่มตัวอย่างที่ 1</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">กลุ่มตัวอย่างที่ 2</Dropdown.Item>
-                            </DropdownButton>
-                        </div>
+
+                <div className="container card" style={{width: '60%', marginTop: `25px`}}>
+                    <div className="container-fluid">
+                        <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
+                            <div className="dropdown" style={{margin: `20px`}}>
+                                <DropdownButton id="dropdown-basic-button" title="เลือกกลุ่มตัวอย่าง" variant="light">
+                                    <Dropdown.Item href="#/action-1">กลุ่มตัวอย่างที่ 1</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">กลุ่มตัวอย่างที่ 2</Dropdown.Item>
+                                </DropdownButton>
+                            </div>
+                    </div>
                 </div>
-                <div>
-                    <hr/>
-                    <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
-                    <p style={{ color: '#79a0d2' }}>*ฟังก์ชันการแปลความใช้ได้ดีก็ต่อเมื่อทุกคำถามมีจำนวนตัวเลือกและค่าของตัวเลือกเท่ากัน</p>
-                    <input type="text" class="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" aria-describedby="button-addon2"></input>
-                    <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}}>ยืนยัน</button>
+
+                <div className="container card" style={{width: '60%', marginTop: `25px`}}>
+                    <div>
+                        <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
+                        <p style={{ color: '#79a0d2' }}>*ฟังก์ชันการแปลความใช้ได้ดีก็ต่อเมื่อทุกคำถามมีจำนวนตัวเลือกและค่าของตัวเลือกเท่ากัน</p>
+                        <input type="text" class="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" aria-describedby="button-addon2"></input>
+                        <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}}>ยืนยัน</button>
+                    </div>
                 </div>
             </div>
         )

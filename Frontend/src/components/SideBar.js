@@ -24,9 +24,9 @@ export default class SideBar extends Component {
                 this.setState({
                     profile: response.data
                 })
-                console.log(this.state.profile.firstname);
-                console.log(this.state.profile.role);
-                console.log(this.state.profile._id);
+                //console.log(this.state.profile.firstname);
+                //console.log(this.state.profile.role);
+                //console.log(this.state.profile._id);
             })
             .catch((error) => {
                 console.log(error);
@@ -40,7 +40,7 @@ export default class SideBar extends Component {
                 this.state.profile.recentProjects[i - 1] = this.state.profile.recentProjects[l - i];
                 this.state.profile.recentProjects[l - i] = x;
             }
-            console.log(this.state.profile.recentProjects);
+            //console.log(this.state.profile.recentProjects);
             this.state.profile.recentProjects.map(res => {
                 axios.get(`http://localhost:5000/projects/` + res)
                     .then(response => {
@@ -48,7 +48,7 @@ export default class SideBar extends Component {
                             projects: this.state.projects.concat(response.data)
                         })
 
-                        console.log(this.state.projects);
+                        //console.log(this.state.projects);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -64,7 +64,7 @@ export default class SideBar extends Component {
                 this.state.profile.recentOtherSurveys[i - 1] = this.state.profile.recentOtherSurveys[l - i];
                 this.state.profile.recentOtherSurveys[l - i] = x;
             }
-            console.log(this.state.profile.recentOtherSurveys);
+            //console.log(this.state.profile.recentOtherSurveys);
             this.state.profile.recentOtherSurveys.map(res => {
                 axios.get(`http://localhost:5000/surveys/find/` + res)
                     .then(response => {
@@ -72,7 +72,7 @@ export default class SideBar extends Component {
                             otherSurveys: this.state.otherSurveys.concat(response.data)
                         })
 
-                        console.log(this.state.otherSurveys);
+                        //console.log(this.state.otherSurveys);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -129,8 +129,8 @@ export default class SideBar extends Component {
     }
 
     listProjects() {
-        console.log(this.state.projects);
-        console.log(this.state.otherSurveys);
+        //console.log(this.state.projects);
+        //console.log(this.state.otherSurveys);
         if (this.state.projects !== undefined) {
             return (this.state.projects.map(res => {
                 return <ListProject project={res} />

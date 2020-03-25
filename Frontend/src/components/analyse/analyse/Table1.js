@@ -7,17 +7,18 @@ class Table1 extends Component {
     this.state = {
         survey: "",
         data: "",
-        result:{},
+        analyseId:"",
+        result: "",
         answerId:"",
         answers:"",
         amountAnswer:"",
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     //get survey มาเพื่อเป็นตัวตั้งต้นเทียบกับ answer
     const surveyId = this.props.surveyId;
-    axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+    await axios.get(`http://localhost:5000/surveys/find/` + surveyId)
       .then(response => {
           this.setState({
               survey: response.data,
@@ -29,7 +30,7 @@ class Table1 extends Component {
           console.log(error);
       })
       //get answer มานับคะแนน
-    axios.get(`http://localhost:5000/answers/find/` + surveyId)
+    await axios.get(`http://localhost:5000/answers/find/` + surveyId)
     .then(response => {
         this.setState({
           answerId:response.data[0]._id,
@@ -41,6 +42,18 @@ class Table1 extends Component {
     .catch((error) => {
         console.log(error);
     })
+
+    await axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+      .then(response => {
+          this.setState({
+              result:response.data,
+              analyseId:response.data[0]._id
+          })                           
+          //console.log(response.data[0]._id)
+      })
+      .catch((error) => {
+          console.log(error);
+      })
   }
 
   preProcess(){
@@ -146,25 +159,45 @@ class Table1 extends Component {
     return rArray
   }
 
-  sendData(preProcess,result){
-    const answerId = this.state.answerId
-    const surveyId = this.props.surveyId
-    const createAnalyse = {
-      answerId:answerId,
-      surveyId:surveyId,
-      preProcess:preProcess,
-      result:result,
-      amountAnswer:this.state.amountAnswer
+  async sendData(preProcess,result){
+    if(this.state.result === undefined){
+      try {
+        const answerId = this.state.answerId
+        const surveyId = this.props.surveyId
+        const createAnalyse = {
+          answerId:answerId,
+          surveyId:surveyId,
+          preProcess:preProcess,
+          result:result,
+          amountAnswer:this.state.amountAnswer
+        }
+        await axios.post(`http://localhost:5000/analyse/edit/${this.state.analyseId}`, createAnalyse)
+        console.log('👉 Returned data');
+      } catch (e) {
+        console.log(`😱 Axios request failed: ${e}`);
+      }
     }
-    //console.log(createAnalyse)
-    axios.post('http://localhost:5000/analyse/create', createAnalyse)
+    else{
+      try {
+        const analyse = {
+          preProcess:preProcess,
+          result:result,
+          amountAnswer:this.state.amountAnswer
+        }
+        await axios.post(`http://localhost:5000/analyse/edit/${this.state.analyseId}`, analyse)
+        console.log('👉 Returned data');
+      } catch (e) {
+        console.log(`😱 Axios request failed: ${e}`);
+      }
+      
+    }
   }
 
   render(){
     //ลอง setState แล้วค่าไม่ยอมอัพเดทเลยเอาตัวแปรมารับแทน
     let preProcess = this.preProcess()
     let result = this.getResult(preProcess)
-    this.sendData(preProcess,result)
+    {(this.state.answers) ? this.sendData(preProcess,result) : console.log("Not send data")}
     //console.log(preProcess)
     //console.log(result)
     return (

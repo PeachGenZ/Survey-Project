@@ -83,7 +83,6 @@ export default class Toolbar extends Component {
                             <NavItem>
                                 {this.props.role === "Responder" ? <div ><a href="/surveys">แบบสอบถาม</a></div> : <div ><a href="/surveys">แบบสอบถาม</a><a href="/projects">โปรเจค</a></div>}
                             </NavItem>
-                            {console.log(this.props.role)}
                             <NavItem>
                                 <div ><a href="/contacts">ติดต่อเรา</a></div>
                             </NavItem>

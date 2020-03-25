@@ -42,6 +42,10 @@ router.route('/:id').delete((req, res) => {
 router.route('/edit/:id').post((req, res) => {
   Analyse.findById(req.params.id)
     .then(analyse => {
+      analyse.preProcess = req.body.preProcess;
+      analyse.result = req.body.result;
+      analyse.amountAnswer = req.body.amountAnswer;
+      
       analyse.save()
         .then(() => res.json('Analyse update!'))
         .catch(err => res.status(400).json('Error: ' + err));

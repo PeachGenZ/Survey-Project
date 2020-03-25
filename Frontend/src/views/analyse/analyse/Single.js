@@ -9,7 +9,6 @@ class Single extends Component {
   constructor(props){
     super(props)
     this.state = {
-      data:"",
       survey:""
     }
   }
@@ -40,7 +39,7 @@ class Single extends Component {
           <div style={{ marginTop: '60px' }}>
             <Table1 surveyId={surveyId}/>
             <div style={{ marginLeft: '5%' }, {marginTop: '5%'}}>
-              <Bar data={this.state.data}/>
+              <Bar surveyId={surveyId}/>
             </div>
           </div>
       </div>

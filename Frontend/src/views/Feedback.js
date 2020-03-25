@@ -50,7 +50,9 @@ export default class Feedback extends Component {
                 <a href={'/survey-management/'+this.props.surveyId+'/analyse/single'} >
                     <button type="button" className="btn btn-outline-primary btn-block btn-lg" style={{ marginTop: `2%` }}>ดูผลลัพธ์</button>
                 </a>
-                <button type="button" className="btn btn-outline-success btn-block btn-lg" style={{ marginTop: `2%` }}>กำหนดผลลัพธ์การแสดงผลลัพธ์เป็นรายบุคคล</button>
+                <a href={'/survey-management/'+this.props.surveyId+'/define_analyse'} >
+                    <button type="button" className="btn btn-outline-success btn-block btn-lg" style={{ marginTop: `2%` }}>กำหนดผลลัพธ์การแสดงผลลัพธ์เป็นรายบุคคล</button>
+                </a>
             </div>
         )
     }

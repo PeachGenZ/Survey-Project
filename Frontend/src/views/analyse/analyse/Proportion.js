@@ -26,13 +26,14 @@ class Proportion extends Component {
   }
 
   render() {
+    const surveyId = this.props.match.params.surveyId;
     return(
       <div className= "container" style={{ marginTop: `50px` }}>
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab />
-            <DataPie data={this.state.data}/>
+            <DataPie surveyId={surveyId}/>
           </div>
       </div>
     )

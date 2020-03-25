@@ -31,6 +31,30 @@ class Report extends Component {
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab />
           </div>
+          <div>
+          <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col" className="text-center">ลำดับ</th>
+              <th scope="col" className="text-center">ชื่อ</th>
+              <th scope="col" className="text-center">กลุ่มตัวอย่าง</th>
+              <th scope="col" className="text-center">วัน/เดือน/ปี</th>
+              <th scope="col" className="text-center">เวลา</th>
+              <th scope="col" className="text-center">ผลลัพธ์</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="text-center">1</td>
+              <td className="text-center">Robert</td>
+              <td className="text-center">ผู้ที่เดินทางกลับจากต่างประเทศ</td>
+              <td className="text-center">10/03/2563</td>
+              <td className="text-center">09:40 น.</td>
+              <td className="text-center">มีความเสี่ยงต่อการติดเชื้อ</td>
+            </tr>
+          </tbody>
+          </table>
+          </div>
       </div>
     )
   }

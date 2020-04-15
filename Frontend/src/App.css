@@ -4,6 +4,13 @@
 
 .App-logo {
   height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
 .App-header {
@@ -18,5 +25,62 @@
 }
 
 .App-link {
-  color: #09d3ac;
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.list  {
+  color: rgb(51, 51, 51);
+}
+
+.list:hover  {
+  color: black;
+  /*background-color: #9c9c9c34;*/
+  border: 1px solid #dda303;
+}
+
+.listCreate  {
+  color: rgb(51, 51, 51);
+}
+
+.listCreate:hover  {
+  color: black;
+  /*background-color: #9c9c9c34;*/
+  border: 2px solid #dda303;
+}
+
+.listSampleGroup:hover{
+  height: 92px;
+  color: black;
+  border: 1px solid #0bdb2e;
+  overflow: hidden;
+}
+
+.bg-template {
+  background-color: #d6e1e6;
+  width: 100%;
+  height: 150px;
+ /* border: 8px solid #ecf0f5;*/
+}
+
+.bg-template-full {
+  background-color: #d6e1e6;
+  height: 370px;
+}
+
+.bg-blank-page {
+  background-color: #ecf0f5;
+  height: auto;
+}
+
+.listAddName:hover {
+  background-color: #ecf0f5;
 }

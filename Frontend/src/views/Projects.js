@@ -1,34 +1,25 @@
 import React, { Component } from 'react'
-import { Card, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane, } from 'reactstrap'
-import classnames from 'classnames'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import axios from 'axios'
-import ListProject from '../components/ListProject';
 
-export default class Projects extends Component {
+import { showComponent } from "../actions/setPageActions";
+import ListProject from '../components/list/ListProject';
+
+class Projects extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            profile: {},
             projects: [],
-            activeTab: '1'
         }
-        this.toggle = this.toggle.bind(this);
     }
 
     componentDidMount() {
-        const userId = "5e60d1e6239b493fd479e681";
-        axios.get('http://localhost:5000/users/5e60d1e6239b493fd479e681')
-            .then(response => {
-                this.setState({
-                    profile: response.data
-                })
-                console.log(this.state.profile);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        const userId = this.props.auth.user.id;
 
-        axios.get(`http://localhost:5000/projects/find/` + userId)
+        this.props.showComponent();
+
+        axios.get(`/projects/find/` + userId)
             .then(response => {
                 this.setState({
                     projects: response.data
@@ -41,10 +32,6 @@ export default class Projects extends Component {
             })
     }
 
-    toggle(tab) {
-        if (this.state.activeTab !== tab) this.setState({ activeTab: tab })
-    }
-
     showGroupProject() {
         return (
             this.state.projects.map(res => {
@@ -53,32 +40,53 @@ export default class Projects extends Component {
         )
     }
 
+    goToCreateProject(){
+        window.location = `/create-project`;
+    }
+
     render() {
         return (
-            <div className="sec">
-                <Card body>
-                    <div>{this.state.profile.firstname}</div>
-                    <div>{this.state.profile.role}</div>
-                    <div>
-                        <Nav tabs>
-                            <NavItem>
-                                <NavLink
-                                    className={classnames({ active: this.state.activeTab === '1' })}
-                                    onClick={() => { this.toggle('1') }}
-                                >
-                                    โปรเจค
-                                </NavLink>
-                            </NavItem>
-                        </Nav>
-                        <TabContent activeTab={this.state.activeTab}>
-                            <TabPane tabId="1">
-                                รายการโปรเจค
-                                {this.showGroupProject()}
-                            </TabPane>
-                        </TabContent>
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <h1>
+                        โปรเจค
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li ><a href="/requests"><i className="fa fa-envelope-o"></i> คำร้องขอ</a></li>
+                        <li className="active">โปรเจค</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+
+                    <div className="box box-warning box-solid">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">รายการโปรเจค</h3>
+                        </div>
                     </div>
-                </Card>
+
+                    <div className="box  box-solid">
+                        <div className="listCreate" onClick={this.goToCreateProject.bind(this)}>
+                            <div className="box-body" align="center">
+                                <i className="fa fa-plus-circle" /> เพิ่มโปรเจคใหม่
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {this.showGroupProject()}
+                </section>
             </div>
         )
     }
 }
+
+Projects.propTypes = {
+    showComponent: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps, { showComponent })(Projects);

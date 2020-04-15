@@ -30,7 +30,7 @@ router.route('/find/:id').get((req, res) => {
 });
 
 router.route('/:id/:nameProject').get((req, res) => {
-  Project.find({ userId: req.params.id, nameProject: req.params.nameProject })
+  Project.findOne({ userId: req.params.id, nameProject: req.params.nameProject })
     .then(projects => res.json(projects))
     .catch(err => res.status(400).json('Error: ' + err));
 });

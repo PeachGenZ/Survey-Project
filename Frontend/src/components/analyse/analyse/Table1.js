@@ -12,13 +12,14 @@ class Table1 extends Component {
         answerId:"",
         answers:"",
         amountAnswer:"",
+        linkertScale:"",
     }
   }
 
   async componentDidMount () {
     //get survey มาเพื่อเป็นตัวตั้งต้นเทียบกับ answer
     const surveyId = this.props.surveyId;
-    await axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+    await axios.get(`/surveys/find/` + surveyId)
       .then(response => {
           this.setState({
               survey: response.data,
@@ -30,7 +31,7 @@ class Table1 extends Component {
           console.log(error);
       })
       //get answer มานับคะแนน
-    await axios.get(`http://localhost:5000/answers/find/` + surveyId)
+    await axios.get(`/answers/find/` + surveyId)
     .then(response => {
         this.setState({
           answerId:response.data[0]._id,
@@ -43,13 +44,15 @@ class Table1 extends Component {
         console.log(error);
     })
 
-    await axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+    await axios.get(`/analyse/find/` + surveyId)
       .then(response => {
           this.setState({
               result:response.data,
+              linkertScale:response.data[0].linkertScale,
               analyseId:response.data[0]._id
           })                           
           //console.log(response.data[0]._id)
+          console.log(response.data[0].linkertScale)
       })
       .catch((error) => {
           console.log(error);
@@ -126,11 +129,26 @@ class Table1 extends Component {
     }
   }
 
+  linkertScale(preProcess){
+    let resultArray=[]
+    for(var i=0; i<this.state.linkertScale.length; i++){
+      let topic=""
+      let min=0
+      let max=0
+      let result={
+        topic,
+        min,
+        max
+      }
+
+    }
+  }
+
   getResult(result){
     //ฟังก์ชันนี้เป็นการคำนวณและจัดรูป object ผลลัพธ์เพื่อนำไปแสดงในตาราง
     let rArray=[]
-    let x=0
-    let x2=0
+    let x=0 
+    let x2=0 //x กำลัง 2
     let n=this.state.amountAnswer
       for(var i=0; i<result.length; i++){
         let r={
@@ -138,8 +156,8 @@ class Table1 extends Component {
           score:0,
           mean:0,
           sd:0,
+          details:"",
         }
-
         if(result[i].title){
           r.name=result[i].title
         }else{
@@ -171,7 +189,7 @@ class Table1 extends Component {
           result:result,
           amountAnswer:this.state.amountAnswer
         }
-        await axios.post(`http://localhost:5000/analyse/edit/${this.state.analyseId}`, createAnalyse)
+        await axios.post(`/analyse/create/${this.state.analyseId}`, createAnalyse)
         console.log('👉 Returned data');
       } catch (e) {
         console.log(`😱 Axios request failed: ${e}`);
@@ -184,7 +202,7 @@ class Table1 extends Component {
           result:result,
           amountAnswer:this.state.amountAnswer
         }
-        await axios.post(`http://localhost:5000/analyse/edit/${this.state.analyseId}`, analyse)
+        await axios.post(`/analyse/edit/${this.state.analyseId}`, analyse)
         console.log('👉 Returned data');
       } catch (e) {
         console.log(`😱 Axios request failed: ${e}`);
@@ -198,7 +216,7 @@ class Table1 extends Component {
     let preProcess = this.preProcess()
     let result = this.getResult(preProcess)
     {(this.state.answers) ? this.sendData(preProcess,result) : console.log("Not send data")}
-    //console.log(preProcess)
+    console.log(preProcess)
     //console.log(result)
     return (
       <div>
@@ -219,9 +237,9 @@ class Table1 extends Component {
               <tr key={ index }>
                 <td className="text-center">{ index+1 }</td>
                 <td className="text-center">{data.name}</td>
-                <td className="text-center">{(data.score) ? data.score.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
-                <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
-                <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "ไม่ได้ระบุค่าคะแนน"}</td>
+                <td className="text-center">{(data.score) ? data.score.toFixed(2) : "ไม่มีข้อมูลคะแนน"}</td>
+                <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "ไม่มีข้อมูลคะแนน"}</td>
+                <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "ไม่มีข้อมูลคะแนน"}</td>
                 <td className="text-center">-</td>
               </tr>
             )

@@ -1,33 +1,31 @@
 import React, { Component } from 'react'
-import '../assests/main.css'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import axios from 'axios';
-import ListUpgradeRequest from '../components/ListUpgradeRequest';
-import ListMemberRequest from '../components/ListMemberRequest';
-import ListDoOnlyRequest from '../components/ListDoOnlyRequest';
-import ListFrequencyRequest from '../components/ListFrequencyRequest';
 
-export default class Requests extends Component {
+import { showComponent } from "../actions/setPageActions";
+
+import UpgradeRequest from '../components/list/request/UpgradeRequest';
+import MemberRequest from '../components/list/request/MemberRequest';
+import DoOnlyRequest from '../components/list/request/DoOnlyRequest';
+import FrequencyRequest from '../components/list/request/FrequencyRequest';
+import DecryptionRequest from '../components/list/request/DecryptionRequest';
+
+class Requests extends Component {
     constructor(props) {
         super(props);
 
-        let newDate = new Date()
-        let date = newDate.getDate();
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear() + 543;
-
         this.state = {
-            requests: [],
-            frequency: [],
-            nowDate: date,
-            nowMonth: month,
-            nowYear: year
+            requests: []
         };
     }
 
-    async componentDidMount() {
-        const userId = "5e60d1e6239b493fd479e681";
-        var freq = [];
-        await axios.get('http://localhost:5000/requests/' + userId)
+    componentDidMount() {
+        const userId = this.props.auth.user.id;
+
+        this.props.showComponent()
+
+        axios.get('/requests/' + userId)
             .then(response => {
                 this.setState({
                     requests: response.data
@@ -37,87 +35,60 @@ export default class Requests extends Component {
             .catch((error) => {
                 console.log(error);
             })
-
-       /* await this.state.requests.map(requests => {
-            if (requests.typeRequest === "frequency") {
-                axios.get('http://localhost:5000/frequency/' + requests.data[1])
-                    .then(response => {
-                        freq = freq.concat(response.data);
-                        console.log(response.data);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
-            }
-        })
-        await this.setState({
-            frequency: freq
-        })
-        console.log(this.state.frequency);*/
     }
 
     showRequests() {
-        if (this.state.requests !== undefined) {
+        if (this.state.requests[0] !== undefined) {
             return (
                 this.state.requests.map(res => {
-                    if (res.typeRequest === "upgrade") {
-                        return <ListUpgradeRequest upgradeRequest={res} />
-                    } else if (res.typeRequest === "member") {
-                        return <ListMemberRequest memberRequest={res} />
-                    } else if (res.typeRequest === "doOnly") {
-                        return <ListDoOnlyRequest doOnlyRequest={res} />
-                    } else if (res.typeRequest === "frequency") {
-                        /* if (this.state.frequency[0] !== undefined) {
-                             return (
-                                 this.state.frequency.map(f => {
-                                     return (
-                                         f.listTimeToDo.map(time => {
-                                            if(time.day === this.state.nowDate && time.month === this.state.nowMonth && time.year === this.state.nowYear){
-                                                return <ListFrequencyRequest frequencyRequest={res} />
-                                            }
-                                        })
-                                     )
-                                 })
-                             )
-                         }*/
-
-                        return <ListFrequencyRequest frequencyRequest={res} />
-                    }
+                    if (res.typeRequest === "upgrade") return <div className="col-md-6"><UpgradeRequest upgradeRequest={res} /></div>
+                    else if (res.typeRequest === "member") return <MemberRequest memberRequest={res} />
+                    else if (res.typeRequest === "doOnly") return <DoOnlyRequest doOnlyRequest={res} />
+                    else if (res.typeRequest === "frequency") return <FrequencyRequest frequencyRequest={res} />
+                    else if (res.typeRequest === "decryption") return <DecryptionRequest decryptionRequest={res} />
                 })
             )
         } else {
-            return "ไม่มีรายการคำขอร้อง"
+            return (
+                <div style={{ fontSize: "25px" }}>
+                    <br /><br /><br /><br />
+                    <div className="row text-center">
+                        <i className="fa fa-envelope-o" /> ไม่มีรายการคำขอร้องขอ
+                    </div>
+                </div>
+            )
         }
     }
 
     render() {
         return (
-            <div>
-                {this.showRequests()}
-                {console.log(this.state.frequency)}
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <h1>
+                        คำร้องขอ
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li className="active"><i className="fa fa-envelope-o"></i> คำร้องขอ</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+                    <div className="box box-warning box-solid">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">รายการคำร้องขอ</h3>
+                        </div>
+                    </div>
+                    {this.showRequests()}
+                </section>
             </div>
         )
     }
-
-    /*render() {
-        return (
-            <div className="sec">
-                <Row>
-                    <div><a href="/">บ็อบบี้</a></div>
-                    <p>สร้างแบบสอบถามขึ้นมาในโปรเจคที่คุณมีรายชื่ออยู่</p>
-                </Row>
-                <Row>
-                    <Card body>
-                        <CardTitle><a href="/">บริการของโรงพยาบาล</a></CardTitle>
-                        <CardText>รายละเอียดชองแบบสอบถาม</CardText>
-                        <Row>
-                            <Col><Button color="primary" size="lg" block>ทำแบบสอบถาม</Button></Col>
-                            <Col><Button color="success" size="lg" block>ขอดูผลลัพธ์</Button></Col>
-                        </Row>
-
-                    </Card>
-                </Row>
-            </div>
-        )
-    }*/
 }
+Requests.propTypes = {
+    showComponent: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(mapStateToProps, { showComponent })(Requests);

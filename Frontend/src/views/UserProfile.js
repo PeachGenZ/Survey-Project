@@ -1,34 +1,77 @@
 import React, { Component } from 'react'
-import { Row, Col, Card, CardImg, Form, FormGroup, Label, Input, CardTitle, Button } from 'reactstrap'
 import axios from 'axios';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-export default class UserProfile extends Component {
+import { showComponent } from "../actions/setPageActions";
+import Can from "../components/rbac/Can";
+
+class UserProfile extends Component {
 
     constructor(props) {
         super(props);
 
-        this.onChangeGender = this.onChangeGender.bind(this);
-        this.onChangeJob = this.onChangeJob.bind(this);
-        this.onChangeDescription = this.onChangeDescription.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
-
         this.state = {
-            users: {},
+            user: {},
             data: [],
             gender: "",
-            job: "",
-            description: ""
+            job: "นักเรียน",
+            description: "",
+            countProject: 0,
+            countSurvey: 0,
+            countListSurvey: 0
 
         };
     }
 
     componentDidMount() {
-        axios.get('http://localhost:5000/users/5e60d1e6239b493fd479e681')
+        var userId = this.props.auth.user.id;
+
+        if (this.props.match.params.userId) userId = this.props.match.params.userId;
+
+        this.props.showComponent()
+
+        axios.get('/users/' + userId)
             .then(response => {
                 this.setState({
-                    users: response.data
+                    user: response.data
                 })
+                console.log(this.state.user)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+        axios.get('/projects/count/' + userId)
+            .then(response => {
+                this.setState({
+                    countProject: response.data
+                })
+                console.log(this.state.countProject)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+        axios.get('/surveys/count/' + userId)
+            .then(response => {
+                this.setState({
+                    countSurvey: response.data
+                })
+                console.log(this.state.countSurvey)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+        axios.get('/listSurvey/find/' + userId)
+            .then(response => {
+                this.setState({
+                    countListSurvey: response.data[0].listSurvey.length
+                })
+                console.log(this.state.countListSurvey)
             })
             .catch((error) => {
                 console.log(error);
@@ -36,152 +79,180 @@ export default class UserProfile extends Component {
 
     }
 
-    onChangeGender(e) {
-        this.setState({
-            gender: e.target.value
-        })
-    }
-
-    onChangeJob(e) {
-        this.setState({
-            job: e.target.value
-        })
-    }
-
-    onChangeDescription(e) {
-        this.setState({
-            description: e.target.value
-        })
-    }
+    onChange = e => {
+        this.setState({ [e.target.id]: e.target.value });
+    };
 
     onSubmit(e) {
         e.preventDefault();
-        const userId = "5e37c88484824b4da85b9e76";
+
+        const userId = this.props.auth.user.id;
         this.state.data[0] = userId;
         this.state.data[1] = this.state.gender;
         this.state.data[2] = this.state.job;
         this.state.data[3] = this.state.description;
 
         var request = {
-            userId: "5e203ad29a267a2818ee1996",
+            userId: "5e9439b122a3f45b40fc4c9e",// ADMIN ID
             typeRequest: "upgrade",
             data: this.state.data
         }
 
         console.log(request);
 
-        axios.post('http://localhost:5000/requests/create', request)
+        axios.post('/requests/create', request)
             .then(res => console.log(res.data));
 
-        /*axios.post('http://localhost:5000/users/upgrade/5dca538c955945213c0d52ff', upgrade)
-          .then(res => console.log(res.data));*/
-
-        window.location = '/';
+        window.location = '/requests';
     }
 
     render() {
-
         return (
-            <div className="sec">
-                <Row>
-                    <Col>
-                        <Card>
-                            <div className="layout_user_profile1">
-                                <CardImg top width="20%" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" alt="COVER" />
-                                <div>
-                                    {this.state.users.firstname} {this.state.users.lastname}
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <h1>
+                        โปรไฟล์ส่วนตัว
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li><a href="/requests"><i className="fa fa-envelope-o"></i> คำร้องขอ</a></li>
+                        <li className="active">โปรไฟล์ส่วนตัว</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="box box-primary">
+                                <div className="box-body box-profile">
+                                    <img className="profile-user-img img-responsive img-circle" src="/dist/img/user2-160x160.jpg" alt="User" />
+                                    <h4 className="profile-username text-center">{this.state.user.firstname + " " + this.state.user.lastname}</h4>
+                                    <p className="text-muted text-center">{this.state.user.role}</p>
+                                    <Can
+                                        role={this.state.user.role}
+                                        perform="user-profile:show-more-profile"
+                                        yes={() => (
+                                            <div>
+                                                <br />
+                                                <ul className="list-group list-group-unbordered">
+                                                    <li className="list-group-item">
+                                                        <b>เพศ</b> <p className="pull-right">{this.state.user.gender}</p>
+                                                    </li>
+                                                    <li className="list-group-item">
+                                                        <b>อาชีพ</b> <p className="pull-right">{this.state.user.job}</p>
+                                                    </li>
+                                                    <li className="list-group-item">
+                                                        <b>โปรเจค</b> <a className="pull-right badge bg-blue">{this.state.countProject}</a>
+                                                    </li>
+                                                    <li className="list-group-item">
+                                                        <b>แบบสอบถามที่สร้าง</b> <a className="pull-right badge bg-blue">{this.state.countSurvey}</a>
+                                                    </li>
+                                                    <li className="list-group-item">
+                                                        <b>แบบสอบถามที่เคยทำ</b> <a className="pull-right badge bg-blue">{this.state.countListSurvey}</a>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        )}
+                                        no={() => ""}
+                                    />
                                 </div>
-                                <div>{this.state.users.role}</div>
                             </div>
-                        </Card>
-                    </Col>
-                    <Col>
-                        {this.state.users.role === "Responder" ?
-                            <Card>
-                                <div className="layout_user_profile2">
-                                    <CardTitle>เพิ่มข้อมูลเพื่ออัพเกรดเป็นผู้วิจัย</CardTitle>
-                                    <form onSubmit={this.onSubmit}>
-                                        <div className="form-group">
-                                            <label>เพศ: </label>
-                                            <select ref="genderInput"
-                                                required
-                                                className="form-control"
-                                                value={this.state.gender}
-                                                onChange={this.onChangeGender}>
-                                                <option value="male">male</option>
-                                                <option value="female">female</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>อาชีพ: </label>
-                                            <select ref="jobInput"
-                                                required
-                                                className="form-control"
-                                                value={this.state.job}
-                                                onChange={this.onChangeJob}>
-                                                <option value="นักเรียน">นักเรียน</option>
-                                                <option value="นิสิต/นักศึกษา">นิสิต/นักศึกษา</option>
-                                                <option value="ข้าราชการ/รัฐวิสาหกิจ">ข้าราชการ/รัฐวิสาหกิจ</option>
-                                                <option value="พนักงานบริษัทเอกชน">พนักงานบริษัทเอกชน</option>
-                                                <option value="ธุรกิจส่วนตัว">ธุรกิจส่วนตัว</option>
-                                                <option value="รับจ้าง">รับจ้าง</option>
-                                                <option value="แม่บ้าน/พ่อบ้าน">แม่บ้าน/พ่อบ้าน</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label>ทำไมถึงอยากยกระดับเป็นผู้วิจัยจงอธิบาย: </label>
-                                            <textarea ref="descriptionInput"
-                                                required
-                                                className="form-control"
-                                                value={this.state.description}
-                                                onChange={this.onChangeDescription}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <input type="submit" value="อัพเกรด" className="btn btn-info" />
-                                        </div>
-                                    </form>
-                                </div>
-                            </Card> :
-                            <Card style={{
-                                height: "250px",
-                                width: "400px"
-                            }}>
-                                <div className="layout_user_profile2">
-                                    <h4 style={{ textAlign:"center" }} >รายละเอียดผู้ใช้</h4>
-                                    <br></br>
-                                    <Row>
-                                        <Col>
-                                            <label>เพศ: </label>
-                                        </Col>
-                                        <Col>
-                                            <p>ชาย</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <label>อาชีพ: </label>
-                                        </Col>
-                                        <Col>
-                                            <p>นิสิต/นักศึกษา</p>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <label>ทำไมถึงอยากยกระดับเป็นผู้วิจัยจงอธิบาย: </label>
-                                        </Col>
-                                        <Col>
-                                            <p>ใช้งานเว็บทำงานวิจัย</p>
-                                        </Col>
-                                    </Row>
-                                </div>
+                        </div>
 
-                            </Card>
-                        }
+                        <Can
+                            role={this.state.user.role}
+                            perform="user-profile:upgrade"
+                            yes={() => (
+                                <div className="col-md-6">
+                                    {this.props.match.params.userId === undefined ?
+                                        <div className="box box-info">
+                                            <div className="box-header with-border">
+                                                <h3 className="box-title">กรอกข้อมูลเพื่ออัพเกรดเป็นนักวิจัย</h3>
+                                            </div>
 
-                    </Col>
-                </Row>
+                                            <form onSubmit={this.onSubmit}>
+                                                <div className="box-body">
+                                                    <div className="form-group">
+                                                        <label>เพศ:</label>
+                                                        <div className="row">
+                                                            <div className="col-md-6">
+                                                                <div className="radio">
+                                                                    <label>
+                                                                        <input type="radio" id="gender" name="optionsGender" defaultValue="ชาย" onChange={this.onChange} />
+                                                            ชาย
+                                                        </label>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="radio">
+                                                                    <label>
+                                                                        <input type="radio" id="gender" name="optionsGender" defaultValue="หญิง" onChange={this.onChange} />
+                                                            หญิง
+                                                        </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="row-md-6">
+                                                            <div className="form-group">
+                                                                <label>อาชีพ:</label>
+                                                                <select
+                                                                    required
+                                                                    id="job"
+                                                                    className="form-control"
+                                                                    value={this.state.job}
+                                                                    onChange={this.onChange}>
+                                                                    <option value="นักเรียน">นักเรียน</option>
+                                                                    <option value="นิสิต/นักศึกษา">นิสิต/นักศึกษา</option>
+                                                                    <option value="ข้าราชการ/รัฐวิสาหกิจ">ข้าราชการ/รัฐวิสาหกิจ</option>
+                                                                    <option value="พนักงานบริษัทเอกชน">พนักงานบริษัทเอกชน</option>
+                                                                    <option value="ธุรกิจส่วนตัว">ธุรกิจส่วนตัว</option>
+                                                                    <option value="รับจ้าง">รับจ้าง</option>
+                                                                    <option value="แม่บ้าน/พ่อบ้าน">แม่บ้าน/พ่อบ้าน</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div className="row-md-6">
+                                                            <div className="form-group">
+                                                                <label>ทำไมถึงอยากยกระดับเป็นผู้วิจัยจงอธิบาย: </label>
+                                                                <textarea
+                                                                    required
+                                                                    id="description"
+                                                                    className="form-control"
+                                                                    value={this.state.description}
+                                                                    onChange={this.onChange}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="box-footer text-center">
+                                                    <div className="form-group">
+                                                        <input type="submit" value="อัพเกรด" className="btn btn-info" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        : ""
+                                    }
+
+                                </div>
+                            )}
+                            no={() => ""}
+                        />
+                    </div>
+                </section>
             </div>
         )
     }
 }
+
+UserProfile.propTypes = {
+    auth: PropTypes.object.isRequired,
+    showComponent: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps, { showComponent })(UserProfile);

@@ -12,7 +12,7 @@ class Gender extends Component {
    componentDidMount () {
     const surveyId = this.props.surveyId;
     //get ข้อมูลคำถามสำเร็จรูป
-    axios.get(`http://localhost:5000/answers/find/` + surveyId)
+    axios.get(`/answers/find/` + surveyId)
     .then(response => {
         this.setState({
             answers:response.data[0].answerUsers,

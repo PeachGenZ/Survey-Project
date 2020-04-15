@@ -12,6 +12,7 @@ router.route('/create').post((req, res) => {
   const surveyId = req.body.surveyId;
   const preProcess = req.body.preProcess;
   const result = req.body.result;
+  const linkertScale = req.body.linkertScale;
   const amountAnswer = req.body.amountAnswer;
 
   const newAnalyse = new Analyse({
@@ -19,6 +20,7 @@ router.route('/create').post((req, res) => {
     surveyId,
     preProcess,
     result,
+    linkertScale,
     amountAnswer
   });
 
@@ -46,6 +48,18 @@ router.route('/edit/:id').post((req, res) => {
       analyse.result = req.body.result;
       analyse.amountAnswer = req.body.amountAnswer;
       
+      analyse.save()
+        .then(() => res.json('Analyse update!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/add/:id').post((req, res) => {
+  Analyse.findById(req.params.id)
+    .then(analyse => {
+      analyse.linkertScale = req.body.linkertScale;
+  
       analyse.save()
         .then(() => res.json('Analyse update!'))
         .catch(err => res.status(400).json('Error: ' + err));

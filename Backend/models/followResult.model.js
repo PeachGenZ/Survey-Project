@@ -6,17 +6,14 @@ const followResultSchema = new Schema({
     surveyId: {
         type: String,
         required: true,
-        unique: true,
         trim: true
-    }, userId: {
+    },userId: {
         type: String,
         required: true,
-        unique: true,
         trim: true
     },frequencyId: {
         type: String,
         required: true,
-        unique: true,
         trim: true
     },follow: Array
 });

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let FollowResult = require('../models/follow.model');
+let FollowResult = require('../models/followResult.model');
 
 router.route('/').get((req, res) => {
     FollowResult.find()

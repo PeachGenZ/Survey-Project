@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux';
-import { Card, Button, CardTitle, CardText, Row } from "reactstrap";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import axios from 'axios';
 
 class InviteToGroup extends Component {
@@ -20,27 +20,43 @@ class InviteToGroup extends Component {
             listTimeToDo: [],
             nowDate: date,
             nowMonth: month,
-            nowYear: year
+            nowYear: year,
+            sdate: 0,
+            smonth: 0,
+            syear: 0,
+            edate: 0,
+            emonth: 0,
+            eyear: 0,
         }
         this.showRequestGroup = this.showRequestGroup.bind(this)
     }
 
     componentDidMount() {
         const surveyId = this.props.match.params.surveyId;
-        const userId = "5e60d1e6239b493fd479e681";
         console.log(surveyId);
-        if (surveyId) {
-            this.props.dispatch({
-                type: 'SHOW_SURVEY'
-            });
-        }
-        axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+
+        axios.get(`/surveys/find/` + surveyId)
             .then(response => {
-                this.setState({
-                    survey: response.data,
-                    already: true
-                })
-                console.log(this.state.survey);
+                if (response.data.shareTo === "OPEN" || response.data.shareTo === "CLOSE") {
+                    if (this.props.auth.isAuthenticated) {
+                        this.setState({
+                            survey: response.data,
+                            already: true,
+                            sdate: response.data.openAndCloseTimes.start.day,
+                            smonth: response.data.openAndCloseTimes.start.month,
+                            syear: response.data.openAndCloseTimes.start.year,
+                            edate: response.data.openAndCloseTimes.end.day,
+                            emonth: response.data.openAndCloseTimes.end.month,
+                            eyear: response.data.openAndCloseTimes.end.year,
+                        })
+                        localStorage.removeItem("surveyId");
+                        console.log(this.state.survey);
+                    } else {
+                        localStorage.setItem("surveyId", surveyId);
+                        console.log(localStorage.surveyId)
+                        window.location = '/login';
+                    }
+                }
             })
             .catch((error) => {
                 console.log(error);
@@ -48,8 +64,9 @@ class InviteToGroup extends Component {
     }
 
     checkGroup() {
-        const userId = "5e60d1e6239b493fd479e681";
         if (this.state.already) {
+            const userId = this.props.auth.user.id;
+
             if (this.state.survey.haveGroup) {
                 if (this.state.checkGroup) {
                     this.state.survey.names.map(memberId => {
@@ -57,61 +74,72 @@ class InviteToGroup extends Component {
                             this.setState({
                                 checkGroup: false
                             })
-                            console.log("1")
                         }
                     })
                 }
-                if (this.state.checkGroup) {
-                    return this.showRequestGroup()
+                if ((this.state.nowYear <= this.state.syear && (this.state.nowMonth < this.state.smonth || (this.state.nowDate < this.state.sdate && this.state.nowDate >= this.state.sdate))) || (this.state.nowMonth === this.state.smonth && this.state.nowDate < this.state.sdate)) {
+                    if (this.state.checkGroup) {
+                        return this.showRequestGroup()
+                    }
                 }
             } else {
                 this.setState({
                     checkGroup: false
                 })
-                console.log("2")
             }
         }
     }
+
     showRequestGroup() {
         return (
             <div>
-                <Card style={{
-                    height: "230px",
-                    width: "470px"
-                }}>
-                    <h4 style={{ textAlign: "center", marginTop: "1rem" }}>คำร้องขอเชิญท่านเข้าร่วมเป็นสมาชิกทำแบบสอบถาม</h4>
-                    <br></br>
-                    <div style={{ marginLeft: "1rem" }}>
-                        <p>ผู้วิจัยต้องการให้คุณเข้าร่วมเป็นสมาชิกเพื่อทำแบบบสอบถาม </p>
-                        <CardTitle><a href="/">แบบสอบถาม : {this.state.survey.nameSurvey}</a></CardTitle>
-                        <CardText>
-                            <p>คำอธิบายแบบสอบถาม : </p>
-                            {this.state.survey.description}
-                        </CardText>
-                    </div>
+                <section className="content">
+                    <div className="box box-warning">
+                        <div className="box-header with-border text-center">
+                            <h3 className="box-title">คำร้องขอเชิญท่านเข้าร่วมกลุ่มสำหรับทำแบบสอบถาม</h3>
+                        </div>
 
-                </Card>
-                <br></br>
-                <Button style={{ width: "470px" }} color="info" onClick={this.agree.bind(this)}>เข้าร่วม</Button>
+                        <div className="box-body text-center">
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <p>แบบสอบถาม :</p>
+                                </div>
+                                <div className="col-md-6">
+                                    <a href="/"> {this.state.survey.nameSurvey}</a>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <p>คำอธิบายแบบสอบถาม : </p>
+                                </div>
+                                <div className="col-md-6">
+                                    {this.state.survey.description}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="box-footer text-center">
+                            <button className="btn btn-info" onClick={this.agree.bind(this)}>เข้าร่วมกลุ่ม</button>
+                        </div>
+                    </div>
+                </section>
             </div>
         )
     }
 
     async agree() {
-        const userId = "5e60d1e6239b493fd479e681";
+        const userId = this.props.auth.user.id;
         const surveyId = this.props.match.params.surveyId;
         var check = false;
         var member = {
             names: this.state.survey.names.concat(userId),
         }
 
-        await axios.post(`http://localhost:5000/surveys/member/${this.props.match.params.surveyId}`, member)
-            .then(res => {
-                console.log(res.data)
-                //window.location = `/online-survey-check/${this.props.match.params.surveyId}`;
-            });
+        await axios.post(`/surveys/member/${this.props.match.params.surveyId}`, member)
+            .then(res => console.log(res.data));
 
-        await axios.get('http://localhost:5000/frequency/find/' + surveyId)
+        await axios.get('/frequency/find/' + surveyId)
             .then(response => {
                 this.setState({
                     frequency: response.data,
@@ -127,13 +155,14 @@ class InviteToGroup extends Component {
             var data = []
             data = data.concat(surveyId);
             data = data.concat(this.state.frequency[0]._id);
+            data = data.concat(this.state.user._id);
             const request = {
                 userId: userId,
                 typeRequest: "frequency",
                 data: data
             }
 
-            axios.post(`http://localhost:5000/requests/create`, request)
+            axios.post(`/requests/create`, request)
                 .then(res => { console.log(res.data) });
 
             const followResult = {
@@ -142,7 +171,7 @@ class InviteToGroup extends Component {
                 frequencyId: this.state.frequency[0]._id
             }
             console.log(followResult);
-            axios.post(`http://localhost:5000/followResults/create`, followResult)
+            axios.post(`/followResults/create`, followResult)
                 .then(res => { console.log(res.data) });
 
         }
@@ -152,24 +181,32 @@ class InviteToGroup extends Component {
                     check = true;
                 }
             })
+        } else window.location = `/online-survey/${surveyId}`;
 
-        }
-        if (await check) window.location = `/online-survey-check/${surveyId}`;
-        else window.location = `/`;
+        if (await check) window.location = `/online-survey/${surveyId}`;
+        else window.location = `/requests`;
 
     }
 
     goToAgreement() {
-        window.location = `/online-survey-check/${this.props.match.params.surveyId}`;
+        window.location = `/online-survey/${this.props.match.params.surveyId}`;
     }
 
     render() {
         return (
-            <div className="sec">
+            <div className="bg-blank-page">
                 {this.state.checkGroup ? this.checkGroup() : this.goToAgreement()}
-                {console.log(this.state.checkGroup)}
             </div>
         )
     }
 }
-export default connect()(InviteToGroup);
+
+InviteToGroup.propTypes = {
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps)(InviteToGroup);

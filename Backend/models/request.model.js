@@ -7,12 +7,16 @@ const requestSchema = new Schema({
         type: String,
         required: true,
         trim: true
-    },typeRequest: {
+    }, typeRequest: {
         type: String,
         required: true
-    }, data: Array
+    }, data: Array,
+    date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 const Request = mongoose.model('Request', requestSchema);
 
-module.exports = Request;
+module.exports = Request; 

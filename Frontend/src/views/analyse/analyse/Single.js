@@ -4,18 +4,19 @@ import axios from 'axios';
 import SingleControl from '../../../components/analyse/analyse/SingleControl.js';
 import Tab from '../../../components/analyse/Tab.js';
 import Bar from '../../../components/analyse/analyse/Bar.js';
+//import SideMenu from '../layout/SideMenu';
 
 class Single extends Component {
   constructor(props){
     super(props)
     this.state = {
-      survey:""
+      survey:"",
     }
   }
 
   componentDidMount () {
     const surveyId = this.props.match.params.surveyId;
-    axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+    axios.get(`/surveys/find/` + surveyId)
       .then(response => {
           this.setState({
               survey: response.data,
@@ -34,7 +35,7 @@ class Single extends Component {
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab/>
-            <SingleControl />
+            <SingleControl surveyId={surveyId}/>
           </div>
           <div style={{ marginTop: '60px' }}>
             <Table1 surveyId={surveyId}/>

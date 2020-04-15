@@ -1,37 +1,30 @@
 import React, { Component } from 'react'
-import { Card, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane, } from 'reactstrap'
-import classnames from 'classnames'
-import axios from 'axios'
-import ListSurveyReadOnly from '../components/ListSurveyReadOnly';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import axios from 'axios';
 
+import { showComponent } from "../actions/setPageActions";
 
+import ListSurveyReadOnly from "../components//list/ListSurveyReadOnly";
 
-export default class Surveys extends Component {
+class Surveys extends Component {
     constructor(props) {
         super(props);
         this.state = {
             profile: {},
             listSurvey: [],
             surveys: [],
-            name: "",
-            activeTab: '1'
+            name: ""
         }
-        this.toggle = this.toggle.bind(this);
         this.showListSurvey = this.showListSurvey.bind(this);
     }
 
     async componentDidMount() {
-        const userId = "5e60d1e6239b493fd479e681";
-        await axios.get('http://localhost:5000/users/5e60d1e6239b493fd479e681')
-            .then(response => {
-                this.setState({
-                    profile: response.data
-                })
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        await axios.get('http://localhost:5000/listSurvey/find/' + userId)
+        const userId = this.props.auth.user.id;
+
+        this.props.showComponent();
+
+        await axios.get('/listSurvey/find/' + userId)
             .then(response => {
                 this.setState({
                     listSurvey: response.data[0].listSurvey
@@ -43,8 +36,7 @@ export default class Surveys extends Component {
                 console.log(error);
             })
         await this.state.listSurvey.map(res => {
-            //console.log(res)
-            axios.get('http://localhost:5000/surveys/find/' + res)
+            axios.get('/surveys/find/' + res)
                 .then(response => {
                     this.setState({
                         surveys: this.state.surveys.concat(response.data)
@@ -61,44 +53,54 @@ export default class Surveys extends Component {
     showListSurvey() {
         return (
             this.state.surveys.map(res => {
-                //console.log(res)
-                return <ListSurveyReadOnly survey={res}/>
-        })
+                return <ListSurveyReadOnly survey={res} />
+            })
         )
 
     }
 
-    toggle(tab) {
-        if (this.state.activeTab !== tab) this.setState({ activeTab: tab })
-    }
-
     render() {
-        //console.log(this.state.lists)
         return (
-            <div className="sec">
-                <Card body>
-                    <div>{this.state.profile.firstname}</div>
-                    <div>{this.state.profile.role}</div>
-                    <div>
-                        <Nav tabs>
-                            <NavItem>
-                                <NavLink
-                                    className={classnames({ active: this.state.activeTab === '1' })}
-                                    onClick={() => { this.toggle('1') }}
-                                >
-                                    แบบสอบถามที่เคยทำ
-                                </NavLink>
-                            </NavItem>
-                        </Nav>
-                        <TabContent activeTab={this.state.activeTab}>
-                            <TabPane tabId="1">
-                                รายชื่อแบบสอบถาม
-                                {this.showListSurvey()}
-                            </TabPane>
-                        </TabContent>
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <h1>
+                        แบบสอบถาม
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li ><a href="/requests"><i className="fa fa-envelope-o"></i> คำร้องขอ</a></li>
+                        <li className="active">แบบสอบถาม</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+
+                    <div className="box box-warning box-solid">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">รายการแบบสอบถาม</h3>
+                        </div>
                     </div>
-                </Card>
+
+                    {this.state.listSurvey[0] !== undefined ?
+                        this.showListSurvey()
+                        :
+                        <div style={{ fontSize: "30px",color: "gray" }}>
+                            <br /><br /><br /><br />
+                            <div className="row text-center">
+                                <i className="fa fa-file-text-o" /> คุณยังไม่เคยทำแบบสอบถาม
+                            </div>
+                        </div>
+                    }
+                </section>
             </div>
         )
     }
 }
+
+Surveys.propTypes = {
+    showComponent: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+export default connect(mapStateToProps, { showComponent })(Surveys);

@@ -12,7 +12,7 @@ class DataPie extends Component {
 
   componentDidMount () {
     const surveyId = this.props.surveyId;
-    axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+    axios.get(`/analyse/find/` + surveyId)
       .then(response => {
           this.setState({
               result:response.data[0].preProcess,
@@ -150,7 +150,7 @@ class DataPie extends Component {
     
     return (
         <div className="chart">
-            {this.getDataPie()}
+            {this.state.result ? this.getDataPie() : <h2><i className="fa fa-ban" /> ยังไม่มีการตอบแบบสอบถามขณะนี้</h2>}
         </div>
     );
   }

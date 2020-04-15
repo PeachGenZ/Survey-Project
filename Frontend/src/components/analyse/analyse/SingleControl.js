@@ -1,36 +1,42 @@
 import React,{Component} from 'react';
-import { Dropdown,DropdownButton } from 'react-bootstrap';
+import axios from 'axios'
 
 class SingleControl extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props)
+        this.onSubmit = this.onSubmit.bind(this)
         this.state = {
-            add: [],
-        };
+            linkertScale:"",
+            analyseId:"",
+        }
     }
-    addInputField = event => {
-        const add = this.state.add;
-        const size = add.length + 1;
-        add.push(size);
-        this.setState({
-            add
-        });
-        event.preventDefault();
-    };
-    addChildInputField = event => {
-        const addChild = this.state.addChild;
-        const size = addChild.length + 1;
-        addChild.push(size);
-        this.setState({
-          addChild
-        });
-        event.preventDefault();
-    };
-    handleChange = event => {
-        this.setState({
-            [event.target.name]: event.target.value
-        });
-    };
+
+    componentDidMount () {
+        const surveyId = this.props.surveyId;
+        axios.get(`/analyse/find/` + surveyId)
+          .then(response => {
+              this.setState({
+                  linkertScale:response.data[0].linkertScale,
+                  analyseId:response.data[0]._id
+              })                           
+          })
+          .catch((error) => {
+              console.log(error);
+          })
+    }
+
+    onSubmit() {
+        try {
+            var text = this.refs.result
+            const textSplit = {
+                linkertScale:text.value.split(',')
+            }
+            axios.post(`/analyse/add/${this.state.analyseId}`, textSplit)
+            //console.log('👉 Success');
+        } catch (e) {
+            console.log(`😱 Axios request failed: ${e}`);
+        }
+    }
 
     render(){
         return (
@@ -47,10 +53,6 @@ class SingleControl extends Component {
                     <div className="container-fluid">
                         <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
                             <div className="dropdown" style={{margin: `20px`}}>
-                                <DropdownButton id="dropdown-basic-button" title="เลือกกลุ่มตัวอย่าง" variant="light">
-                                    <Dropdown.Item href="#/action-1">กลุ่มตัวอย่างที่ 1</Dropdown.Item>
-                                    <Dropdown.Item href="#/action-2">กลุ่มตัวอย่างที่ 2</Dropdown.Item>
-                                </DropdownButton>
                             </div>
                     </div>
                 </div>
@@ -59,8 +61,8 @@ class SingleControl extends Component {
                     <div>
                         <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
                         <p style={{ color: '#79a0d2' }}>*ฟังก์ชันการแปลความใช้ได้ดีก็ต่อเมื่อทุกคำถามมีจำนวนตัวเลือกและค่าของตัวเลือกเท่ากัน</p>
-                        <input type="text" class="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" aria-describedby="button-addon2"></input>
-                        <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}}>ยืนยัน</button>
+                        <input type="text" className="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" ref='result'></input>
+                        <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}} onClick={() => this.onSubmit()}>ยืนยัน</button>
                     </div>
                 </div>
             </div>

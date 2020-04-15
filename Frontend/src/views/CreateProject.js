@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import { Form, FormGroup, Label, Input } from 'reactstrap'
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import axios from 'axios';
 
-export default class CreateProject extends Component {
+import { showComponent } from "../actions/setPageActions";
+
+class CreateProject extends Component {
     constructor(props) {
         super(props);
 
-        this.onChangeNameProject = this.onChangeNameProject.bind(this);
-        this.onChangeDescription = this.onChangeDescription.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
 
@@ -20,7 +21,11 @@ export default class CreateProject extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:5000/users/5e60d1e6239b493fd479e681')
+        const userId = this.props.auth.user.id;
+
+        this.props.showComponent();
+
+        axios.get('/users/' + userId)
             .then(response => {
                 this.setState({
                     profile: response.data
@@ -31,92 +36,132 @@ export default class CreateProject extends Component {
             .catch((error) => {
                 console.log(error);
             })
+
+
     }
 
-    onChangeNameProject(e) {
-        this.setState({
-            nameProject: e.target.value
-        })
-    }
-
-    onChangeDescription(e) {
-        this.setState({
-            description: e.target.value
-        })
-    }
+    onChange = e => {
+        this.setState({ [e.target.id]: e.target.value });
+    };
 
     async onSubmit(e) {
         e.preventDefault();
+
+        const userId = this.props.auth.user.id;
+        var nameProject = this.state.nameProject;
 
         var createProject = {
             nameProject: this.state.nameProject,
             description: this.state.description
         }
-        var nameProject = this.state.nameProject;
         console.log(createProject);
 
-        await axios.post('http://localhost:5000/projects/createProject/5e60d1e6239b493fd479e681', createProject)
+        await axios.post(`/projects/createProject/${userId}`, createProject)
             .then(res => console.log(res.data));
 
 
-        await axios.get(`http://localhost:5000/projects/5e60d1e6239b493fd479e681/` + nameProject)
+        await axios.get(`/projects/${userId}/` + nameProject)
             .then(response => {
                 this.setState({
                     project: response.data
                 })
-
-                console.log(this.state.project[0]._id);
+                console.log(this.state.project._id);
             })
             .catch((error) => {
                 console.log(error);
             })
 
         if (await this.state.profile.recentProjects.length < 10) {
-            const editRecentProject = await {
-                recentOtherSurveys: this.state.profile.recentOtherSurveys,
-                recentProjects: this.state.profile.recentProjects.concat(this.state.project[0]._id)
-            }
-            await axios.post('http://localhost:5000/users/edit/5e60d1e6239b493fd479e681', editRecentProject)
-                .then(res => console.log(res.data));
-        } else {
-            this.state.profile.recentProjects[0] = await this.state.profile.recentProjects[1];
-            this.state.profile.recentProjects[1] = await this.state.profile.recentProjects[2];
-            this.state.profile.recentProjects[2] = await this.state.profile.recentProjects[3];
-            this.state.profile.recentProjects[3] = await this.state.profile.recentProjects[4];
-            this.state.profile.recentProjects[4] = await this.state.profile.recentProjects[5];
-            this.state.profile.recentProjects[5] = await this.state.profile.recentProjects[6];
-            this.state.profile.recentProjects[6] = await this.state.profile.recentProjects[7];
-            this.state.profile.recentProjects[7] = await this.state.profile.recentProjects[8];
-            this.state.profile.recentProjects[8] = await this.state.profile.recentProjects[9];
-            this.state.profile.recentProjects[9] = await this.state.project[0]._id;
+            await this.state.profile.recentProjects.unshift(this.state.project._id)
+
             const editRecentProject = await {
                 recentOtherSurveys: this.state.profile.recentOtherSurveys,
                 recentProjects: this.state.profile.recentProjects
             }
-            await axios.post('http://localhost:5000/users/edit/5e60d1e6239b493fd479e681', editRecentProject)
+
+            await axios.post(`/users/edit/${userId}`, editRecentProject)
+                .then(res => console.log(res.data));
+        } else {
+            await this.state.profile.recentProjects.splice(9, 1);
+            await this.state.profile.recentProjects.unshift(this.state.project._id)
+
+            const editRecentProject = await {
+                recentOtherSurveys: this.state.profile.recentOtherSurveys,
+                recentProjects: this.state.profile.recentProjects
+            }
+
+            await axios.post(`/users/edit/${userId}`, editRecentProject)
                 .then(res => console.log(res.data));
         }
 
-        window.location = await '/project-management/' + this.state.project[0]._id;
+        window.location = await '/project-management/' + this.state.project._id;
     }
 
     render() {
         return (
-            <div className="sec">
-                <div><h2>สร้างโปรเจคแบบสอบถามใหม่</h2></div>
-                <Form onSubmit={this.onSubmit}>
-                    <FormGroup>
-                        <Label for="projectName">ชื่อโปรเจค</Label>
-                        <Input type="text" value={this.state.nameProject} onChange={this.onChangeNameProject} placeholder="ชื่อโปรเจค" required />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="descript">คำอธิบาย</Label>
-                        <Input type="textarea" value={this.state.description} onChange={this.onChangeDescription} placeholder="คำอธิบาย" />
-                    </FormGroup>
-                    <input type="submit" value="สร้างโปรเจค" className="btn btn-info" ></input>
-                </Form>
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <h1>
+                        สร้างโปรเจค
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li ><a href="/requests"><i className="fa fa-bell-o"></i> คำร้องขอ</a></li>
+                        <li className="active">สร้างโปรเจค</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+                    <div className="box box-info">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">สร้างโปรเจคใหม่</h3>
+                        </div>
 
+                        <form onSubmit={this.onSubmit}>
+                            <div className="box-body">
+                                <div className="row-md-6">
+                                    <div className="form-group">
+                                        <label>ชื่อโปรเจค:</label>
+                                        <input type="text"
+                                            required
+                                            id="nameProject"
+                                            className="form-control"
+                                            value={this.state.nameProject}
+                                            onChange={this.onChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="row-md-6">
+                                    <div className="form-group">
+                                        <label>คำอธิบายโปรเจค: </label>
+                                        <textarea
+                                            id="description"
+                                            className="form-control"
+                                            value={this.state.description}
+                                            onChange={this.onChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="box-footer text-center">
+                                <div className="form-group">
+                                    <input type="submit" value="สร้าง" className="btn btn-info" style={{ width: "200px" }} />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
             </div>
         )
     }
 }
+
+CreateProject.propTypes = {
+    showComponent: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps, { showComponent })(CreateProject);

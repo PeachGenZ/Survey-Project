@@ -7,6 +7,10 @@ const surveySchema = new Schema({
         type: String,
         required: true,
         trim: true
+    }, userId: {
+        type: String,
+        required: true,
+        trim: true
     }, sampleGroupId: {
         type: String,
         trim: true
@@ -17,9 +21,7 @@ const surveySchema = new Schema({
     }, description: {
         type: String,
     }, shareTo: {
-        type: String,
-        enum: ["public", "open", "close"],
-        required: true,
+        type: String
     }, wantName: {
         type: Boolean,
         required: true
@@ -29,8 +31,6 @@ const surveySchema = new Schema({
         required: true
     },
     names: Array,
-    listNameExperiments: Array,
-    listNameControls: Array,
     frequency: {
         amount: {
             type: Number
@@ -42,34 +42,32 @@ const surveySchema = new Schema({
         type: Boolean,
         required: true
     }, openAndCloseTimes: {
-        start:{
+        start: {
             day: {
-                type:Number,
-                required: true
+                type: Number
             }, month: {
-                type:Number,
-                required: true
+                type: Number
             }, year: {
-                type:Number,
-                required: true
+                type: Number
             }
-        }, end:{
+        }, end: {
             day: {
-                type:Number,
-                required: true
+                type: Number
             }, month: {
-                type:Number,
-                required: true
+                type: Number
             }, year: {
-                type:Number,
-                required: true
+                type: Number
             }
         }
-    }, qprocess: Array,
-    builtIns:Array,
+    }, builtIns: Array,
     data: {
         type: Object,
         required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        enum: ["DRAFT", "PAUSE", "ONLINE", "FINISH"],
     }
 });
 

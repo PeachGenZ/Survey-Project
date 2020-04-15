@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
-import { Table } from 'reactstrap';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import axios from 'axios';
 
-export default class FollowResult extends Component {
+class FollowResult extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             survey: {},
+            project: [],
+            already: false,
             names: [],
             members: [],
             frequency: [],
             listTimeToDo: [],
             checkListTime: false,
             follower: [],
-
         };
         this.showTh = this.showTh.bind(this)
         this.showRow = this.showRow.bind(this)
@@ -22,24 +24,25 @@ export default class FollowResult extends Component {
         this.showTD = this.showTD.bind(this)
     }
 
-
     async componentDidMount() {
         const surveyId = this.props.surveyId;
-        await axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+
+        await axios.get(`/surveys/find/` + surveyId)
             .then(response => {
                 this.setState({
                     survey: response.data,
+                    amountMember: response.data.names.length,
                     names: response.data.names
                 })
                 console.log(this.state.survey);
-                console.log(this.state.names);
             })
             .catch((error) => {
                 console.log(error);
             })
+
         if (await this.state.survey.names[0] !== undefined) {
             this.state.survey.names.map(userId => {
-                axios.get(`http://localhost:5000/users/` + userId)
+                axios.get(`/users/` + userId)
                     .then(response => {
                         this.setState({
                             members: this.state.members.concat(response.data)
@@ -52,7 +55,8 @@ export default class FollowResult extends Component {
                     })
             })
         }
-        await axios.get('http://localhost:5000/frequency/find/' + surveyId)
+
+        await axios.get('/frequency/find/' + surveyId)
             .then(response => {
                 this.setState({
                     frequency: response.data,
@@ -67,7 +71,7 @@ export default class FollowResult extends Component {
         if (await this.state.frequency[0] !== undefined) {
             var date = []
             this.state.listTimeToDo.map(dates => {
-                date = date.concat(dates.day + "-" + dates.month + "-" + dates.year);
+                date = date.concat(dates.day + "/" + dates.month + "/" + dates.year);
             })
             this.setState({
                 listTimeToDo: date,
@@ -76,7 +80,7 @@ export default class FollowResult extends Component {
             console.log(this.state.listTimeToDo);
         }
         if (await this.state.survey !== undefined) {
-            axios.get('http://localhost:5000/followResults/findS/' + surveyId)
+            axios.get('/followResults/findS/' + surveyId)
                 .then(response => {
                     this.setState({
                         follower: response.data,
@@ -88,7 +92,21 @@ export default class FollowResult extends Component {
                     console.log(error);
                 })
         }
+
+        await axios.get(`/projects/find/` + this.state.survey.userId)
+            .then(response => {
+                this.setState({
+                    project: response.data,
+                    already: true
+                })
+                console.log(this.state.project[0]);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
     }
+
     showTh() {
         return (
             this.state.listTimeToDo.map(date => {
@@ -98,6 +116,7 @@ export default class FollowResult extends Component {
             })
         )
     }
+
     showRow() {
         return (
             this.state.follower.map((user, index) => {
@@ -110,6 +129,7 @@ export default class FollowResult extends Component {
             })
         )
     }
+
     showName(index) {
         return (
             this.state.members.map(mem => {
@@ -119,11 +139,12 @@ export default class FollowResult extends Component {
             })
         )
     }
+
     showTD(index) {
         return (
             this.state.listTimeToDo.map(dates => {
                 var check = false;
-                this.state.follower[index].follow.map(date => {
+                this.state.follower[index].follow.map((date, i) => {
                     if (dates === date) {
                         check = true;
                     }
@@ -134,22 +155,84 @@ export default class FollowResult extends Component {
         )
     }
 
+    goToProject() {
+        window.location = "/project-management/" + this.state.survey.projectId
+    }
+
+    showTable() {
+        return (
+            <div>
+                <section className="content-header">
+                    <h1>
+                        <i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}
+                    </h1>
+                    <ol className="breadcrumb">
+                        <li ><a href="/requests"><i className="fa fa-envelope-o" /> คำร้องขอ</a></li>
+                        <li ><a onClick={this.goToProject.bind(this)}><i className="fa fa-folder-o" /> {this.state.project[0].nameProject}</a></li>
+                        <li className="active"><i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}</li>
+                    </ol>
+                </section>
+                <br />
+                <section className="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">ติดตามผลการทำแบบสอบถาม</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ชื่อ-นามสกุล</th>
+                                                {this.state.checkListTime ? this.showTh() : ""}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.state.checkListTime ? this.showRow() : ""}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        )
+    }
+
     render() {
         return (
-            <div >
-                <h1>ติดตามผล</h1>
-                <Table bordered>
-                    <thead>
-                        <tr>
-                            <th>ชื่อ-นามสกุล</th>
-                            {this.state.checkListTime ? this.showTh() : ""}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.checkListTime ? this.showRow() : ""}
-                    </tbody>
-                </Table>
+            <div>
+                {this.state.already ?
+                    this.state.frequency[0] !== undefined ?
+                        this.showTable()
+                        : <div className="row text-center" style={{fontSize:"25px"}}>
+                            <br/><br/><br/><br/><br/><br/><br/>
+                            <i className="fa fa-ban" /> ไม่ได้ตั้งค่าให้สามารถใช้งานฟังก์ชันนี้ได้
+                        </div>
+
+                    : <div style={{fontSize:"25px"}}>
+                        <br/><br/><br/><br/><br/><br/>
+                        <div className="row text-center">
+                            <i className="fa fa-refresh fa-spin" />
+                        </div>
+                        <div className="row text-center">
+                            กำลังโหลดข้อมูล...
+                        </div>
+                    </div>
+                }
             </div>
         )
     }
 }
+
+FollowResult.propTypes = {
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
+export default connect(mapStateToProps)(FollowResult);

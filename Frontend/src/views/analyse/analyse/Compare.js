@@ -17,7 +17,7 @@ class Compare extends Component {
 
   componentDidMount () {
     const surveyId = this.props.match.params.surveyId;
-    axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+    axios.get(`/surveys/find/` + surveyId)
       .then(response => {
           this.setState({
               survey: response.data,

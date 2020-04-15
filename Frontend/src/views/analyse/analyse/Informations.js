@@ -15,14 +15,14 @@ class Informations extends Component {
     super(props);
     this.state = {
       survey: "",
-      amountAnswer: "",
+      answers:"",
     };
   }
 
    componentDidMount () {
     const surveyId = this.props.match.params.surveyId;
     //get ข้อมูลมาเพื่อแสดงชื่อ survey
-     axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+     axios.get(`/surveys/find/` + surveyId)
       .then(response => {
           this.setState({
               survey:response.data,
@@ -33,54 +33,62 @@ class Informations extends Component {
       })
       
       //get ข้อมูลคำถามสำเร็จรูป
-      axios.get(`http://localhost:5000/answers/find/` + surveyId, {
+      axios.get(`/answers/find/` + surveyId, {
             responseType: 'json'
         }).then(response => {
             this.setState({ 
-              amountAnswer:response.data[0].amountAnswer,
+              answers:response.data[0],
             });
       })
       //console.log(this.state.answers)
   }
 
+  showComponent(){
+    const surveyId = this.props.match.params.surveyId;
+    return(
+      <div>
+        <h3>จำนวนผู้ตอบแบบสอบถามทั้งหมด {this.state.answers.amountAnswer} คน</h3>
+        <div style={{ marginTop: '3%' }}>
+          <img src={Male} width="10%" height="10%"/>
+          <img src={Female} width="11%" height="11%" style={{ marginLeft: '30%' }}/>
+        </div>
+        <div>
+          <Gender surveyId={surveyId}/>
+        </div>
+        <div className="text-center">
+          <h3 style={{ marginTop: '5%' }}>อายุ</h3>
+          <Age surveyId={surveyId}/>
+        </div>
+        <div className="text-center">
+          <h3 style={{ marginTop: '5%' }}>สถานภาพ</h3>
+          <Status surveyId={surveyId}/>
+        </div>
+        <div className="text-center">
+          <h3 style={{ marginTop: '5%' }}>ระดับการศึกษาขั้นสูงสุด</h3>
+          <Education surveyId={surveyId}/>
+        </div>
+        <div className="text-center">
+          <h3 style={{ marginTop: '5%' }}>อาชีพ</h3>
+          <Career surveyId={surveyId}/>
+        </div>
+        <div className="text-center">
+          <h3 style={{ marginTop: '5%' }}>รายได้เฉลี่ยต่อเดือน</h3>
+          <Income surveyId={surveyId}/>
+        </div>
+      </div>
+    )
+  }
+
 
 
   render() {
-    const surveyId = this.props.match.params.surveyId;
     return(
       <div className= "container" style={{ marginTop: `50px` }}>
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab />
-            <h3>จำนวนผู้ตอบแบบสอบถามทั้งหมด {this.state.amountAnswer} คน</h3>
-            <div style={{ marginTop: '3%' }}>
-              <img src={Male} width="10%" height="10%"/>
-              <img src={Female} width="11%" height="11%" style={{ marginLeft: '30%' }}/>
-            </div>
-            <div>
-              <Gender surveyId={surveyId}/>
-            </div>
-            <div className="text-center">
-              <h3 style={{ marginTop: '5%' }}>อายุ</h3>
-              <Age surveyId={surveyId}/>
-            </div>
-            <div className="text-center">
-              <h3 style={{ marginTop: '5%' }}>สถานภาพ</h3>
-              <Status surveyId={surveyId}/>
-            </div>
-            <div className="text-center">
-              <h3 style={{ marginTop: '5%' }}>ระดับการศึกษาขั้นสูงสุด</h3>
-              <Education surveyId={surveyId}/>
-            </div>
-            <div className="text-center">
-              <h3 style={{ marginTop: '5%' }}>อาชีพ</h3>
-              <Career surveyId={surveyId}/>
-            </div>
-            <div className="text-center">
-              <h3 style={{ marginTop: '5%' }}>รายได้เฉลี่ยต่อเดือน</h3>
-              <Income surveyId={surveyId}/>
-            </div>
+            {this.state.answers ? this.showComponent():<h2><i className="fa fa-ban" /> ยังไม่มีการตอบแบบสอบถามขณะนี้</h2>}
           </div>
       </div>
     )

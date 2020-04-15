@@ -7,12 +7,13 @@ class Bar extends Component {
     super(props)
     this.state = {
       result:"",
+      already:"",
     }
   }
 
   componentDidMount () {
     const surveyId = this.props.surveyId;
-    axios.get(`http://localhost:5000/analyse/find/` + surveyId)
+    axios.get(`/analyse/find/` + surveyId)
       .then(response => {
           this.setState({
               result:response.data[0].result,
@@ -38,13 +39,16 @@ class Bar extends Component {
     let value=[]
     if(this.state.result){
       for(let i=0; i<this.state.result.length; i++){
-        value.push(this.state.result[i].mean.toFixed(3))
+        if(this.state.result[i].mean != null){
+          this.state.already = true
+          value.push(this.state.result[i].mean.toFixed(3))
+        }
       }
     }
     return value
   }
 
-  render(){
+  showComponent(){
     let labels=this.getLabels()
     let value=this.getData()
 
@@ -62,12 +66,21 @@ class Bar extends Component {
             },
         ]
     };
+
     return (
-        <div className="chart">
-            <h2>แผนภูมิที่พล็อตจากค่าเฉลี่ย</h2>
-            <HorizontalBar data={data}/>
-        </div>
-    );
+      <div className="chart">
+          <h2>แผนภูมิที่พล็อตจากค่าเฉลี่ย</h2>
+          <HorizontalBar data={data}/>
+      </div> 
+    )
+  }
+
+  render(){
+    return (
+      <div>
+        {this.state.already ? this.showComponent():""}
+      </div>
+    )
     
   }
 }

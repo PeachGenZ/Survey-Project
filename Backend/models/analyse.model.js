@@ -17,6 +17,7 @@ const analyseSchema = new Schema({
     }, 
     preProcess: Array,
     result: Array,
+    linkertScale: Array,
     amountAnswer: Number,
 });
 

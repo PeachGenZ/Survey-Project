@@ -1,52 +1,55 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
-
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const passport = require("passport");
 
 const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json());
-
-const uri = process.env.MONGODB_URI;
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }
+// Bodyparser middleware
+app.use(
+    bodyParser.urlencoded({
+        extended: false
+    })
 );
-const connection = mongoose.connection;
-connection.once('open', () => {
-  console.log("MongoDB database connection established successfully");
-})
+app.use(bodyParser.json());
+// DB Config
+const db = require("./config/keys").mongoURI;
+// Connect to MongoDB
+mongoose
+    .connect(
+        db,
+        { useNewUrlParser: true }
+    )
+    .then(() => console.log("MongoDB successfully connected"))
+    .catch(err => console.log(err));
 
-/*var session = require('./config/session');
-var session = session();
-
-var passport = require('./config/passport');
-var passport = passport();*/
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
 
 const usersRouter = require('./routes/users');
+const requestsRouter = require('./routes/requests');
 const projectsRouter = require('./routes/projects');
-const surveysRouter = require('./routes/surveys');
+const sampleGroupsRouter = require('./routes/sampleGroups');
+const surveysRouter = require('./routes/survey');
+const templatesRouter = require('./routes/template');
+const frequencyRouter = require('./routes/frequency');
+const followResultsRouter = require('./routes/followResult');
 const answersRouter = require('./routes/answers');
 const listSurveyRouter = require('./routes/listSurvey');
-const requestRouter = require('./routes/requests');
-const frequencyRouter = require('./routes/frequency');
-const followResultRouter = require('./routes/followResult');
-const sampleGroupsRouter = require('./routes/sampleGroups');
 const analyseRouter = require('./routes/analyse');
 
-
 app.use('/users', usersRouter);
+app.use('/requests', requestsRouter);
 app.use('/projects', projectsRouter);
+app.use('/sampleGroups', sampleGroupsRouter);
 app.use('/surveys', surveysRouter);
+app.use('/templates', templatesRouter);
+app.use('/frequency', frequencyRouter);
+app.use('/followResults', followResultsRouter);
 app.use('/answers', answersRouter);
 app.use('/listSurvey', listSurveyRouter);
-app.use('/requests', requestRouter);
-app.use('/frequency', frequencyRouter);
-app.use('/followResults', followResultRouter);
-app.use('/sampleGroups', sampleGroupsRouter);
 app.use('/analyse', analyseRouter);
 
-app.listen(port, () => {
-    console.log(`Server is running on port: ${port}`);
-});
+const port = process.env.PORT || 5000; // process.env.port is Heroku's port if you choose to deploy the app there
+app.listen(port, () => console.log(`Server up and running on port ${port} !`));

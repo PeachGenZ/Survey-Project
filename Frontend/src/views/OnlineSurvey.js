@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 import axios from 'axios';
 import SimpleCrypto from "simple-crypto-js";
-import { Input, Modal, ModalHeader, ModalBody, Row, Col, FormGroup, Label, ModalFooter, Button } from 'reactstrap'
+
 import * as Survey from "survey-react";
 import "survey-react/survey.css";
-import "bootstrap/dist/css/bootstrap.css";
 
 import "jquery-ui/themes/base/all.css";
 import "nouislider/distribute/nouislider.css";
@@ -58,11 +58,10 @@ class OnlineSurvey extends Component {
             frequency: [],
             checkDoNot: true,
             checkHaveGroup: false,
-            modal: false,
+            askEncrypt: false,
             wantEncrypt: false,
             dontWantEncrypt: false,
             resultAsString: {},
-            question: {},
             checkEncrypt: false,
             encryptAnswer: false,
             checkSurvey: false,
@@ -84,20 +83,16 @@ class OnlineSurvey extends Component {
     }
 
     async componentDidMount() {
-        const surveyId = this.props.match.params.surveyId;
-        const userId = "5e60d1e6239b493fd479e681";
-        const name = this.props.match.params.name;
+        const surveyId = this.props.surveyId;
+        const userId = this.props.auth.user.id;
+        const name = this.props.name;
         console.log(name);
         console.log(surveyId);
         console.log("cdate:" + this.state.cdate);
         console.log("cmonth:" + this.state.cmonth);
         console.log("cyear:" + this.state.cyear);
-        if (surveyId) {
-            this.props.dispatch({
-                type: 'SHOW_SURVEY'
-            });
-        }
-        await axios.get(`http://localhost:5000/surveys/find/` + surveyId)
+
+        await axios.get(`/surveys/find/` + surveyId)
             .then(response => {
                 this.setState({
                     survey: response.data,
@@ -120,7 +115,7 @@ class OnlineSurvey extends Component {
                 console.log(error);
             })
 
-        await axios.get('http://localhost:5000/users/' + userId)
+        await axios.get('/users/' + userId)
             .then(response => {
                 this.setState({
                     profile: response.data
@@ -133,7 +128,7 @@ class OnlineSurvey extends Component {
             })
 
         //ดึงข้อมูลจาก answers
-        await axios.get(`http://localhost:5000/answers/find/` + surveyId)
+        await axios.get(`/answers/find/` + surveyId)
             .then(response => {
                 this.setState({
                     answer: response.data
@@ -145,7 +140,7 @@ class OnlineSurvey extends Component {
                 console.log(error);
             })
         //ดึงข้อมูลจาก listSurvey
-        await axios.get(`http://localhost:5000/listSurvey/find/` + userId)
+        await axios.get(`/listSurvey/find/` + userId)
             .then(response => {
                 this.setState({
                     listSurvey: response.data
@@ -157,8 +152,8 @@ class OnlineSurvey extends Component {
                 console.log(error);
             })
         //ดึงข้อมูลจาก followResult
-        if (await this.state.survey.shareTo === "open" || this.state.survey.shareTo === "close") {
-            axios.get(`http://localhost:5000/followResults/find/${surveyId}/${userId}`)
+        if (await this.state.survey.shareTo === "OPEN" || this.state.survey.shareTo === "CLOSE") {
+            axios.get(`/followResults/find/${surveyId}/${userId}`)
                 .then(response => {
                     this.setState({
                         followResult: response.data
@@ -170,7 +165,7 @@ class OnlineSurvey extends Component {
                     console.log(error);
                 })
 
-            axios.get('http://localhost:5000/frequency/find/' + surveyId)
+            axios.get('/frequency/find/' + surveyId)
                 .then(response => {
                     this.setState({
                         frequency: response.data
@@ -204,7 +199,6 @@ class OnlineSurvey extends Component {
             })
             console.log(this.state.checkHaveGroup);
         }
-
     }
 
     showSurvey() {
@@ -391,58 +385,122 @@ class OnlineSurvey extends Component {
 
                 var form = JSON.parse(this.state.survey.data);
                 if (this.state.survey.builtIns[0] !== undefined) {
-                    form.pages[1] = form.pages[0];
-                    form.pages[0] = widget;
+                    /*form.pages[1] = form.pages[0];
+                    form.pages[0] = widget;*/
+                    //form.pages[0] = widget;
+                    form.pages.unshift(widget);
+                    console.log(form)
                 }
-
                 console.log(form.pages);
                 Survey.Survey.cssType = "default";
                 var model = new Survey.Model(form);
                 console.log(model);
                 return (
-                    <div className="App">
-                        <div className="surveyjs">
-                            <h1>SurveyJS library in action:</h1>
-                            <Survey.Survey
-                                model={model}
-                                onComplete={this.onComplete}
-                                onValueChanged={this.onValueChanged} />
-                        </div>
+                    <div className="">
+                        {this.state.askEncrypt ?
+                            <section className="content">
+                                <div className="box box-info">
+                                    <div className="box-header with-border">
+                                        <h3 className="box-title">ท่านต้องการปกปิดคำตอบของท่านหรือไม่</h3>
+                                    </div>
+
+                                    <div className="box-body">
+                                        <div className="row">
+                                            <div className="col-md-3">
+                                                <div className="form-group">
+                                                    <label>
+                                                        <input type="radio"
+                                                            name="optionsRadios"
+                                                            id="optionsRadios1"
+                                                            onChange={this.onChangeEncrypt.bind(this)}
+                                                        /> ปกปิดคำตอบ
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div className="col-md-3">
+                                                <div className="form-group">
+                                                    <label>
+                                                        <input type="radio"
+                                                            name="optionsRadios"
+                                                            id="optionsRadios2"
+                                                            onChange={this.onChangeDoNotEncrypt.bind(this)}
+                                                        /> ไม่ปกปิดคำตอบ
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {this.state.wantEncrypt ?
+                                            <input
+                                                type="password"
+                                                id="secretKey"
+                                                className="form-control"
+                                                placeholder="กรุณาใส่รหัสผ่านเพื่อใช้ปกปิดข้อมูลของท่าน"
+                                                onChange={this.onChange}
+                                            /> : ""
+                                        }
+
+                                    </div>
+                                    <div className="box-footer text-center">
+                                        {(this.state.wantEncrypt && (this.state.secretKey !== "")) || this.state.dontWantEncrypt ?
+                                            <button className="btn btn-info" onClick={this.confirm.bind(this)}>ยืนยัน</button>
+                                            : <button className="btn btn-info" disabled>ยืนยัน</button>
+                                        }
+                                    </div>
+                                </div>
+                            </section>
+                            : <div className="surveyjs">
+                                <h1 style={{ marginLeft: "1%" }}>แบบสอบถามที่ถูกสร้างจากการสนับสนุนของ SurveyJS :</h1>
+                                <Survey.Survey
+                                    json={form}
+                                    onComplete={this.onComplete}
+                                    onValueChanged={this.onValueChanged} />
+                            </div>
+                        }
                     </div>
                 )
             } else {
-                return "แบบสอบถามสามารถทำได้ครั้งเดียว"
+                return <div>แบบสอบถามสามารถทำได้ครั้งเดียว</div>
             }
         } else {
             return (
-                <div>
-                    กำลังโหลด....
+                <div style={{ fontSize: "25px" }}>
+                    <br /><br /><br /><br /><br /><br />
+                    <div className="row text-center">
+                        <i className="fa fa-refresh fa-spin" />
+                    </div>
+                    <div className="row text-center">
+                        กำลังโหลดข้อมูล...
+                        </div>
                 </div>
             )
         }
-
     }
 
     onValueChanged(result) {
         console.log("value changed!");
+        console.log(result.data);
     }
 
     async onComplete(result) {
-        console.log("Complete! " + result.data);
-        const surveyId = this.props.match.params.surveyId;
-        const userId = "5e60d1e6239b493fd479e681";
-        const name = this.props.match.params.name;
+        console.log("Complete! " + JSON.stringify(result.data));
+        console.log(result.data);
+        const surveyId = this.props.surveyId;
+        const userId = this.props.auth.user.id;
+        const name = this.props.name;
         var resultAsString = result.data;
 
         if (await this.state.frequency[0] !== undefined) {
             this.setState({
-                modal: true
+                askEncrypt: true
             })
             if (this.state.survey.wantName) {
                 this.setState({
                     resultAsString: {
+                        head: "",
                         userId: userId,
-                        name: this.state.profile.firstname + " " + this.state.profile.lastname,
+                        decryptKey: "",
                         noFrequency: this.state.cdate + "-" + this.state.cmonth + "-" + this.state.cyear,
                         resultAsString
                     }
@@ -450,28 +508,31 @@ class OnlineSurvey extends Component {
             } else {
                 this.setState({
                     resultAsString: {
+                        head: "",
                         noFrequency: this.state.cdate + "-" + this.state.cmonth + "-" + this.state.cyear,
                         resultAsString
                     }
                 })
             }
             console.log(this.state.resultAsString);
-        } else if (await this.state.survey.shareTo === "close" || this.state.survey.shareTo === "open") {
+        } else if (await this.state.survey.shareTo === "CLOSE" || this.state.survey.shareTo === "OPEN") {
             //var resultAsString = result.data;
             this.setState({
-                modal: true
+                askEncrypt: true
             })
             if (this.state.survey.wantName) {
                 this.setState({
                     resultAsString: {
+                        head: "",
                         userId: userId,
-                        name: this.state.profile.firstname + " " + this.state.profile.lastname,
+                        decryptKey: "",
                         resultAsString
                     }
                 })
             } else {
                 this.setState({
                     resultAsString: {
+                        head: "",
                         resultAsString
                     }
                 })
@@ -479,14 +540,24 @@ class OnlineSurvey extends Component {
             console.log(this.state.resultAsString);
         } else {
             if (await this.state.survey.wantName) {
-                this.setState({
-                    resultAsString: {
-                        userId: userId,
-                        name: name,
-                        resultAsString
-                    },
-                    checkEncrypt: true
-                })
+                if (name === "") {
+                    this.setState({
+                        resultAsString: {
+                            name: this.state.profile.firstname + " " + this.state.profile.lastname,
+                            resultAsString
+                        },
+                        checkEncrypt: true
+                    })
+                } else {
+                    this.setState({
+                        resultAsString: {
+                            name: name,
+                            resultAsString
+                        },
+                        checkEncrypt: true
+                    })
+                }
+
             } else {
                 this.setState({
                     resultAsString: {
@@ -495,33 +566,37 @@ class OnlineSurvey extends Component {
                     checkEncrypt: true
                 })
             }
-            //await this.setState({ checkEncrypt: true })
+        }
+    }
 
+    async sendData() {
+        const surveyId = this.props.surveyId;
+        const userId = this.props.auth.user.id;
+
+        console.log("sendData")
+
+        //เช็กว่าถ้ามีการสร้าง answer ไว้อยู่แล้วให้ update ค่าเข้าไป
+        if (await this.state.answer[0] !== undefined) {
+            const editAnswer = {
+                //amountUser: รอเช็กกับ userId ว่ามีอยู่แล้วไหม?
+                amountAnswer: this.state.answer[0].amountAnswer + 1,
+                answerUsers: this.state.answer[0].answerUsers.concat(this.state.resultAsString)
+            }
+            console.log(editAnswer);
+            axios.post(`/answers/edit/${this.state.answer[0]._id}`, editAnswer)
+                .then(res => console.log(res.data));
+            //แต่ถ้าไม่มี ให้สร้าง answer สำหรับ surveyId นี้ขึ้นมาใหม่เลย
+        } else {
+            const createAnswer = {
+                surveyId: surveyId,
+                answerUsers: [this.state.resultAsString]
+            }
+            console.log(createAnswer);
+            axios.post('/answers/create', createAnswer)
+                .then(res => console.log(res.data));
         }
 
-
-        //console.log(resultAsString.question1);
-        /*if (this.props.test.checkEncrypt) {
-            //เช็กว่าถ้ามีการสร้าง answer ไว้อยู่แล้วให้ update ค่าเข้าไป
-            if (await this.state.answer[0] !== undefined) {
-                const editAnswer = {
-                    //amountUser: รอเช็กกับ userId ว่ามีอยู่แล้วไหม?
-                    amountAnswer: this.state.answer[0].amountAnswer + 1,
-                    answerUsers: this.state.answer[0].answerUsers.concat(this.state.resultAsString)
-                }
-                console.log(editAnswer);
-                axios.post(`http://localhost:5000/answers/edit/${this.state.answer[0]._id}`, editAnswer)
-                    .then(res => console.log(res.data));
-                //แต่ถ้าไม่มี ให้สร้าง answer สำหรับ surveyId นี้ขึ้นมาใหม่เลย
-            } else {
-                const createAnswer = {
-                    surveyId: surveyId,
-                    answerUsers: [this.state.resultAsString]
-                }
-                console.log(createAnswer);
-                axios.post('http://localhost:5000/answers/create', createAnswer)
-                    .then(res => console.log(res.data));
-            }
+        if (this.state.survey.shareTo === "OPEN" || this.state.survey.shareTo === "CLOSE") {
             //เช็กว่ามีการสร้าง listSurvey สำหรับ userId แล้วหรือยัง
             if (await this.state.listSurvey[0] !== undefined) {
                 var check1 = false;
@@ -539,7 +614,7 @@ class OnlineSurvey extends Component {
                         listSurvey: this.state.listSurvey[0].listSurvey.concat(surveyId)
                     }
                     console.log(editListSurvey);
-                    axios.post(`http://localhost:5000/listSurvey/edit/${this.state.listSurvey[0]._id}`, editListSurvey)
+                    axios.post(`/listSurvey/edit/${this.state.listSurvey[0]._id}`, editListSurvey)
                         .then(res => console.log(res.data));
                 }
                 //ถ้ายังไม่มีก็ให้สร้าง listSurvey สำหรับ userId นั้นๆขึ้นมา
@@ -549,7 +624,7 @@ class OnlineSurvey extends Component {
                     listSurvey: [surveyId]
                 }
                 console.log(createListSurvey);
-                axios.post('http://localhost:5000/listSurvey/create', createListSurvey)
+                axios.post('/listSurvey/create', createListSurvey)
                     .then(res => console.log(res.data));
             }
             //เช็กว่ามีการเพิ่มค่าเข้าไปใน recentOthersurvey หรือยัง
@@ -565,199 +640,91 @@ class OnlineSurvey extends Component {
                     //แก้ไปใช้ spilice(0,0,{surveyId})
                     //ให้เช็กว่า recentOtherSurvey มี array มากกว่า 11 ไหม ถ้าไม่ ให้ update ค่าเพิ่มไปได้เลย
                     if (await this.state.profile.recentOtherSurveys.length < 10) {
-                        const editRecentProject = await {
-                            recentOtherSurveys: this.state.profile.recentOtherSurveys.concat(surveyId),
-                            recentProjects: this.state.profile.recentProjects
-                        }
-                        await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
-                            .then(res => console.log(res.data));
-                        //แก้ไปใช้ pop() เพื่อเอาตัวสุดท้ายออก แล้วใช้ spilice(0,0,surveyId) เพื่อเพิ่มอันใหม่มาที่ตัวแรก 
-                        //แต่ถ้ามีเท่ากับ 11 หรือ มากกว่า(เป็นไปไม่ได้นอกจาก bug) ให้นำค่าใหม่มาเพิ่มและให้ค่าเก่าสุดเอาออกไปแล้วค่อย update
-                    } else {
-                        this.state.profile.recentOtherSurveys[0] = await this.state.profile.recentOtherSurveys[1];
-                        this.state.profile.recentOtherSurveys[1] = await this.state.profile.recentOtherSurveys[2];
-                        this.state.profile.recentOtherSurveys[2] = await this.state.profile.recentOtherSurveys[3];
-                        this.state.profile.recentOtherSurveys[3] = await this.state.profile.recentOtherSurveys[4];
-                        this.state.profile.recentOtherSurveys[4] = await this.state.profile.recentOtherSurveys[5];
-                        this.state.profile.recentOtherSurveys[5] = await this.state.profile.recentOtherSurveys[6];
-                        this.state.profile.recentOtherSurveys[6] = await this.state.profile.recentOtherSurveys[7];
-                        this.state.profile.recentOtherSurveys[7] = await this.state.profile.recentOtherSurveys[8];
-                        this.state.profile.recentOtherSurveys[8] = await this.state.profile.recentOtherSurveys[9];
-                        this.state.profile.recentOtherSurveys[9] = await surveyId;
+                        await this.state.profile.recentOtherSurveys.unshift(surveyId)
+
                         const editRecentProject = await {
                             recentOtherSurveys: this.state.profile.recentOtherSurveys,
                             recentProjects: this.state.profile.recentProjects
                         }
-                        await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
+                        await axios.post(`/users/edit/${userId}`, editRecentProject)
+                            .then(res => console.log(res.data));
+                        //แก้ไปใช้ pop() เพื่อเอาตัวสุดท้ายออก แล้วใช้ spilice(0,0,surveyId) เพื่อเพิ่มอันใหม่มาที่ตัวแรก 
+                        //แต่ถ้ามีเท่ากับ 11 หรือ มากกว่า(เป็นไปไม่ได้นอกจาก bug) ให้นำค่าใหม่มาเพิ่มและให้ค่าเก่าสุดเอาออกไปแล้วค่อย update
+                    } else {
+                        await this.state.profile.recentOtherSurveys.splice(9, 1);
+                        await this.state.profile.recentOtherSurveys.unshift(surveyId)
+
+                        const editRecentProject = await {
+                            recentOtherSurveys: this.state.profile.recentOtherSurveys,
+                            recentProjects: this.state.profile.recentProjects
+                        }
+                        await axios.post(`/users/edit/${userId}`, editRecentProject)
                             .then(res => console.log(res.data));
                     }
                 }
                 //ถ้ายังไม่มีก็ให้ เพิ่มค่าลำดับแรกเข้าไปได้เลยโดยการ update
             } else {
+                await this.state.profile.recentOtherSurveys.unshift(surveyId)
+
                 const editRecentProject = await {
-                    recentOtherSurveys: this.state.profile.recentOtherSurveys.concat(surveyId),
+                    recentOtherSurveys: this.state.profile.recentOtherSurveys,
                     recentProjects: this.state.profile.recentProjects
                 }
-                await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
+                await axios.post(`/users/edit/${userId}`, editRecentProject)
                     .then(res => console.log(res.data));
             }
-        }*/
-    }
-    async sendData() {
-        const surveyId = this.props.match.params.surveyId;
-        const userId = "5e60d1e6239b493fd479e681";
+            if (await this.state.followResult[0] !== undefined) {
+                var follow = [];
+                var date = this.state.cdate + "-" + this.state.cmonth + "-" + this.state.cyear;
+                console.log(date);
+                follow = this.state.followResult[0].follow.concat(date);
+                const followResult = {
+                    follow: follow
+                }
 
-        //เช็กว่าถ้ามีการสร้าง answer ไว้อยู่แล้วให้ update ค่าเข้าไป
-        if (await this.state.answer[0] !== undefined) {
-            const editAnswer = {
-                //amountUser: รอเช็กกับ userId ว่ามีอยู่แล้วไหม?
-                amountAnswer: this.state.answer[0].amountAnswer + 1,
-                answerUsers: this.state.answer[0].answerUsers.concat(this.state.resultAsString)
-            }
-            console.log(editAnswer);
-            axios.post(`http://localhost:5000/answers/edit/${this.state.answer[0]._id}`, editAnswer)
-                .then(res => console.log(res.data));
-            //แต่ถ้าไม่มี ให้สร้าง answer สำหรับ surveyId นี้ขึ้นมาใหม่เลย
-        } else {
-            const createAnswer = {
-                surveyId: surveyId,
-                answerUsers: [this.state.resultAsString]
-            }
-            console.log(createAnswer);
-            axios.post('http://localhost:5000/answers/create', createAnswer)
-                .then(res => console.log(res.data));
-        }
-        //เช็กว่ามีการสร้าง listSurvey สำหรับ userId แล้วหรือยัง
-        if (await this.state.listSurvey[0] !== undefined) {
-            var check1 = false;
-            //วน loop หาว่ามีการเพิ่ม surveyId ลง listSurvey ของ userId นี้แล้วหรือไม่
-            this.state.listSurvey[0].listSurvey.map(res => {
-                if (res !== surveyId) {
-                    check1 = true;
-                } else {
-                    check1 = false;
-                }
-            })
-            //ถ้ายังไม่มี (check1=true) ให้เพิ่ม surveyId ลง listSurvey ด้วยการ update ค่า 
-            if (check1) {
-                const editListSurvey = {
-                    listSurvey: this.state.listSurvey[0].listSurvey.concat(surveyId)
-                }
-                console.log(editListSurvey);
-                axios.post(`http://localhost:5000/listSurvey/edit/${this.state.listSurvey[0]._id}`, editListSurvey)
+                axios.post(`/followResults/edit/${this.state.followResult[0]._id}`, followResult)
                     .then(res => console.log(res.data));
             }
-            //ถ้ายังไม่มีก็ให้สร้าง listSurvey สำหรับ userId นั้นๆขึ้นมา
-        } else {
-            const createListSurvey = {
-                userId: userId,
-                listSurvey: [surveyId]
-            }
-            console.log(createListSurvey);
-            axios.post('http://localhost:5000/listSurvey/create', createListSurvey)
-                .then(res => console.log(res.data));
         }
-        //เช็กว่ามีการเพิ่มค่าเข้าไปใน recentOthersurvey หรือยัง
-        if (await this.state.profile.recentOtherSurveys[0] !== undefined) {
-            var check2 = false;
-            //วน loop เพื่อเช็กว่าเคยเพิ่ม surveyId นี้เข้าไปหรือยัง
-            this.state.profile.recentOtherSurveys.map(res => {
-                if (res !== surveyId) check2 = true;
-                else check2 = false;
-            })
-            //ถ้ายังไม่มี (check2=true) 
-            if (check2) {
-                //แก้ไปใช้ spilice(0,0,{surveyId})
-                //ให้เช็กว่า recentOtherSurvey มี array มากกว่า 11 ไหม ถ้าไม่ ให้ update ค่าเพิ่มไปได้เลย
-                if (await this.state.profile.recentOtherSurveys.length < 10) {
-                    const editRecentProject = await {
-                        recentOtherSurveys: this.state.profile.recentOtherSurveys.concat(surveyId),
-                        recentProjects: this.state.profile.recentProjects
-                    }
-                    await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
-                        .then(res => console.log(res.data));
-                    //แก้ไปใช้ pop() เพื่อเอาตัวสุดท้ายออก แล้วใช้ spilice(0,0,surveyId) เพื่อเพิ่มอันใหม่มาที่ตัวแรก 
-                    //แต่ถ้ามีเท่ากับ 11 หรือ มากกว่า(เป็นไปไม่ได้นอกจาก bug) ให้นำค่าใหม่มาเพิ่มและให้ค่าเก่าสุดเอาออกไปแล้วค่อย update
-                } else {
-                    this.state.profile.recentOtherSurveys[0] = await this.state.profile.recentOtherSurveys[1];
-                    this.state.profile.recentOtherSurveys[1] = await this.state.profile.recentOtherSurveys[2];
-                    this.state.profile.recentOtherSurveys[2] = await this.state.profile.recentOtherSurveys[3];
-                    this.state.profile.recentOtherSurveys[3] = await this.state.profile.recentOtherSurveys[4];
-                    this.state.profile.recentOtherSurveys[4] = await this.state.profile.recentOtherSurveys[5];
-                    this.state.profile.recentOtherSurveys[5] = await this.state.profile.recentOtherSurveys[6];
-                    this.state.profile.recentOtherSurveys[6] = await this.state.profile.recentOtherSurveys[7];
-                    this.state.profile.recentOtherSurveys[7] = await this.state.profile.recentOtherSurveys[8];
-                    this.state.profile.recentOtherSurveys[8] = await this.state.profile.recentOtherSurveys[9];
-                    this.state.profile.recentOtherSurveys[9] = await surveyId;
-                    const editRecentProject = await {
-                        recentOtherSurveys: this.state.profile.recentOtherSurveys,
-                        recentProjects: this.state.profile.recentProjects
-                    }
-                    await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
-                        .then(res => console.log(res.data));
-                }
-            }
-            //ถ้ายังไม่มีก็ให้ เพิ่มค่าลำดับแรกเข้าไปได้เลยโดยการ update
-        } else {
-            const editRecentProject = await {
-                recentOtherSurveys: this.state.profile.recentOtherSurveys.concat(surveyId),
-                recentProjects: this.state.profile.recentProjects
-            }
-            await axios.post(`http://localhost:5000/users/edit/${userId}`, editRecentProject)
-                .then(res => console.log(res.data));
-        }
-        if (await this.state.followResult[0] !== undefined) {
-            var follow = [];
-            var date = this.state.cdate + "-" + this.state.cmonth + "-" + this.state.cyear;
-            console.log(date);
-            follow = this.state.followResult[0].follow.concat(date);
-            const followResult = {
-                follow: follow
-            }
 
-            axios.post(`http://localhost:5000/followResults/edit/${this.state.followResult[0]._id}`, followResult)
-                .then(res => console.log(res.data));
-        }
+
+        await this.props.checked({
+            step: 3,
+            name: this.props.name
+        })
     }
 
-    toggleModal() {
-        this.setState({
-            modal: !this.state.modal
-        });
-    }
     onChangeEncrypt() {
         this.setState({
             wantEncrypt: !this.state.wantEncrypt,
             dontWantEncrypt: false
         });
     }
+
     onChangeDoNotEncrypt() {
         this.setState({
             dontWantEncrypt: !this.state.dontWantEncrypt,
             wantEncrypt: false
         });
     }
-    onChangePassword(e) {
-        this.setState({
-            secretKey: e.target.value
-        });
-    }
+
+    onChange = e => this.setState({ [e.target.id]: e.target.value })
+
     confirm() {
         if (this.state.dontWantEncrypt) {
             this.setState({
-                modal: false,
                 checkEncrypt: true
             })
         } else {
-            this.setState({
-                modal: false
-            })
             this.encryptAnswer()
         }
     }
+
     encryptAnswer() {
         if (this.state.secretKey !== "") {
             var simpleCrypto = new SimpleCrypto(this.state.secretKey);
+            const secretKey = "SJyevrus";
+            var simpleCryptoSystem = new SimpleCrypto(secretKey);
             var head = "surveyJS";
 
             if (this.state.frequency[0] !== undefined) {
@@ -765,8 +732,9 @@ class OnlineSurvey extends Component {
                     this.setState({
                         resultAsString: {
                             head: simpleCrypto.encrypt(head),
-                            name: simpleCrypto.encrypt(this.state.resultAsString.name),
+                            userId: simpleCryptoSystem.encrypt(this.state.resultAsString.userId),
                             noFrequency: simpleCrypto.encrypt(this.state.resultAsString.noFrequency),
+                            decryptKey: "",
                             resultAsString: simpleCrypto.encrypt(this.state.resultAsString.resultAsString)
                         }, checkEncrypt: true
                     })
@@ -780,12 +748,13 @@ class OnlineSurvey extends Component {
                     })
                 }
                 console.log(this.state.resultAsString);
-            } else if (this.state.survey.shareTo === "close" || this.state.survey.shareTo === "open") {
+            } else if (this.state.survey.shareTo === "CLOSE" || this.state.survey.shareTo === "OPEN") {
                 if (this.state.survey.wantName) {
                     this.setState({
                         resultAsString: {
                             head: simpleCrypto.encrypt(head),
-                            name: simpleCrypto.encrypt(this.state.resultAsString.name),
+                            userId: simpleCryptoSystem.encrypt(this.state.resultAsString.userId),
+                            decryptKey: "",
                             resultAsString: simpleCrypto.encrypt(this.state.resultAsString.resultAsString)
                         }, checkEncrypt: true
                     })
@@ -802,95 +771,22 @@ class OnlineSurvey extends Component {
         }
     }
 
-
     render() {
-        //อาจจะติดตรงที่ มันไม่มี "" หรือป่าว?
-        /* const title1 = "เทสๆ";
-         const title2 = this.state.title;
-         console.log(title1);
-         console.log(title2);
-         var surveyJSON = {
-             title: title1,
-             pages: [
-                 {
-                     name: "page1",
-                     elements: [
-                         {
-                             type: "matrix",
-                             name: "q1",
-                             title: "แบบประเมิณความวิตก",
-                             columns: [
-                                 {
-                                     value: "1",
-                                     text: "ไม่มีเลย"
-                                 },
-                                 {
-                                     value: "2",
-                                     text: "มีบางครั้ง"
-                                 },
-                                 {
-                                     value: "3",
-                                     text: "มีค่อนข้างบ่อย"
-                                 },
-                                 {
-                                     value: "4",
-                                     text: "มีมากที่สุด"
-                                 }
-                             ],
-                             rows: [
-                                 "เมื่อนึกถึงความป่วยครั้งนี้ท่านรู้สึกสงบ",
-                                 "เมื่อนึกถึงความป่วยครั้งนี้ท่านรู้สึกมั่นคง"
-                             ]
-                         }
-                     ]
-                 }
-             ]
-         };
-         console.log(surveyJSON);
-         Survey.Survey.cssType = "default";
-         var model = new Survey.Model(surveyJSON);
-         console.log(model);*/
+        if (this.state.checkEncrypt) this.sendData()
         return (
             <div>
                 {this.showSurvey()}
-                <Modal isOpen={this.state.modal} toggle={this.toggleModal.bind(this)}
-                    fade={true} backdrop="static" className={this.props.className}>
-                    <ModalHeader>ท่านต้องการปกปิดคำตอบของท่านหรือไม่?</ModalHeader>
-                    <ModalBody>
-                        <Row>
-                            <Col>
-                                <FormGroup check>
-                                    <Label check>
-                                        <Input type="radio" name="radio1" onChange={this.onChangeEncrypt.bind(this)} />{''}
-                                        ปกปิดคำตอบ
-                                </Label>
-                                </FormGroup>
-                            </Col>
-                            <Col>
-                                <FormGroup check>
-                                    <Label check>
-                                        <Input type="radio" name="radio1" onChange={this.onChangeDoNotEncrypt.bind(this)} />{''}
-                                        ไม่ปกปิดคำตอบ
-                                </Label>
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        {this.state.wantEncrypt ? <Input type="password" placeholder="กรุณาใส่รหัสผ่านเพื่อใช้ปกปิดข้อมูลของท่าน" onChange={this.onChangePassword.bind(this)} /> : ""}
-                    </ModalBody>
-                    <ModalFooter>
-                        {(this.state.wantEncrypt && (this.state.secretKey !== "")) || this.state.dontWantEncrypt ?
-                            <Button color="info" onClick={this.confirm.bind(this)}>ยืนยัน</Button> :
-                            <Button color="info" onClick={this.confirm.bind(this)} disabled>ยืนยัน</Button>}
-                    </ModalFooter>
-                </Modal>
-                {this.state.checkEncrypt ? this.sendData() : ""}
             </div>
         )
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        test: state
-    }
-}
+
+OnlineSurvey.propTypes = {
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth
+});
+
 export default connect(mapStateToProps)(OnlineSurvey);

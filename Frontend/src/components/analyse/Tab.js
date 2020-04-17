@@ -1,21 +1,29 @@
 import React, { Component } from 'react';
 
+
 class Tab extends Component  {
+    constructor(props) {
+        super(props)
+        this.state = {
+            active:"",
+        }
+    }
+
     render() {
         return (
-            <div className="container" style={{ margin: `50px` }}>
-                <ul className="nav nav-tabs nav-fill nav-pills" >
+            <div style={{ margin: `50px` }}>
+                <ul className="nav nav-tabs nav-justified" >
                     <li className="nav-item">
-                        <a className="nav-link" href="informations"><h5>ข้อมูลผู้ตอบแบบสอบถาม</h5></a>
+                        <a className="nav-link" href="informations"><h3>ข้อมูลผู้ตอบแบบสอบถาม</h3></a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="single"><h5>ตาราง</h5></a>
+                        <a className="nav-link" href="single"><h3>ตาราง</h3></a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="proportion"><h5>สัดส่วน</h5></a>
+                        <a className="nav-link" href="proportion"><h3>สัดส่วน</h3></a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="report"><h5>ผลลัพธ์รายบุคคล</h5></a>
+                        <a className="nav-link" href="report"><h3>ผลลัพธ์รายบุคคล</h3></a>
                     </li>
                 </ul>
             </div>

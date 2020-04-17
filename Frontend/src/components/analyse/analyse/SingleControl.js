@@ -40,7 +40,7 @@ class SingleControl extends Component {
 
     render(){
         return (
-            <div className="">
+            <div>
                 <div className="container" style={{width: '60%', marginTop: `25px`}}>
                         <h3 style={{marginTop: `15px`}}>เลือกรูปแบบการแสดงผล</h3>
                     <div className = "row" style={{marginTop: `15px`,marginBottom: `20px`}}>
@@ -48,7 +48,7 @@ class SingleControl extends Component {
                         <a href='compare'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '10%'}}>แสดงทุกกลุ่มตัวอย่าง</button></a>
                     </div>
                 </div>
-
+                <hr/>
                 <div className="container card" style={{width: '60%', marginTop: `25px`}}>
                     <div className="container-fluid">
                         <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
@@ -56,7 +56,7 @@ class SingleControl extends Component {
                             </div>
                     </div>
                 </div>
-
+                <hr/>
                 <div className="container card" style={{width: '60%', marginTop: `25px`}}>
                     <div>
                         <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
@@ -65,7 +65,8 @@ class SingleControl extends Component {
                         <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}} onClick={() => this.onSubmit()}>ยืนยัน</button>
                     </div>
                 </div>
-            </div>
+                <hr/>
+            </div> 
         )
     }
 }

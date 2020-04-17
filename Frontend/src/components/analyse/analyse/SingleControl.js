@@ -40,12 +40,12 @@ class SingleControl extends Component {
 
     render(){
         return (
-            <div>
-                <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-                        <h3 style={{marginTop: `15px`}}>รูปแบบการแสดงผล</h3>
+            <div className="">
+                <div className="container" style={{width: '60%', marginTop: `25px`}}>
+                        <h3 style={{marginTop: `15px`}}>เลือกรูปแบบการแสดงผล</h3>
                     <div className = "row" style={{marginTop: `15px`,marginBottom: `20px`}}>
-                        <a href='single'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '125px'}}>แสดง 1 กลุ่มตัวอย่าง</button></a>
-                        <a href='compare'><button type="button" className="btn btn-success btn-lg" style={{marginLeft: '50px'}}>แสดงทุกกลุ่มตัวอย่าง</button></a>
+                        <a href='single'><button type="button" className="btn btn-primary btn-lg">แสดง 1 กลุ่มตัวอย่าง</button></a>
+                        <a href='compare'><button type="button" className="btn btn-primary btn-lg" style={{marginLeft: '10%'}}>แสดงทุกกลุ่มตัวอย่าง</button></a>
                     </div>
                 </div>
 

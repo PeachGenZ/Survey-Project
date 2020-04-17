@@ -4,13 +4,14 @@ import axios from 'axios';
 import SingleControl from '../../../components/analyse/analyse/SingleControl.js';
 import Tab from '../../../components/analyse/Tab.js';
 import Bar from '../../../components/analyse/analyse/Bar.js';
-//import SideMenu from '../layout/SideMenu';
 
 class Single extends Component {
   constructor(props){
     super(props)
     this.state = {
       survey:"",
+      pageManage: "",
+      checkOwnSurvey: false
     }
   }
 
@@ -21,16 +22,25 @@ class Single extends Component {
           this.setState({
               survey: response.data,
           })
+
       })
       .catch((error) => {
           console.log(error);
       })
   }
 
+  onChangePageManage = data =>{
+    this.setState({
+        pageManage: data
+    })
+}
+
+
   render() {
     const surveyId = this.props.match.params.surveyId;
     return(
       <div className= "container" style={{ marginTop: `50px` }}>
+          <a href='..' ><button type="button" className="btn btn-warning btn-flat" style={{marginRight: '100%'}}><i className="fa fa-toggle-left" /> ย้อนกลับ</button></a>
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>

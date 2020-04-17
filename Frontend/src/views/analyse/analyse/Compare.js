@@ -32,6 +32,7 @@ class Compare extends Component {
     const surveyId = this.props.match.params.surveyId;
     return(
       <div className= "container" style={{ marginTop: `50px` }}>
+          <a href='..' ><button type="button" className="btn btn-warning btn-flat" style={{marginRight: '100%'}}><i className="fa fa-toggle-left" /> ย้อนกลับ</button></a>
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>

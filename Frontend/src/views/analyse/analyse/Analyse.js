@@ -25,6 +25,7 @@ class Analyse extends Component {
   render() {
     return(
       <div className= "container" style={{ marginTop: `50px` }}>
+          <a href='.' ><button type="button" className="btn btn-warning btn-flat" style={{marginRight: '100%'}}><i className="fa fa-toggle-left" /> ย้อนกลับ</button></a>
           <div className="text-center">
             <h2>กำหนดผลลัพธ์แสดงรายบุคคล</h2>
             <p style={{ color: '#79a0d2' }}>*เมื่อผู้ตอบแบบสอบถามทำแบบสอบถามเสร็จสิ้นฟังก์ชันนี้จะสรุปผลลัพธ์ตามคะแนนที่ผู้ตอบทำได้</p>

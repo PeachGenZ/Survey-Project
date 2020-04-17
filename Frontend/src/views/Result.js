@@ -62,11 +62,11 @@ export default class Result extends Component {
                 </section>
                 <section className="content text-center">
                     <a href={'/survey-management/'+this.props.surveyId+'/analyse/single'} >
-                        <button type="button" className="btn-lg btn-success" style={{ marginTop: `1%` }}><h4>ดูผลลัพธ์แบบสอบถาม</h4></button>
+                        <button type="button" className="btn btn-lg btn-success" style={{ marginTop: `1%` }}><h4>ดูผลลัพธ์แบบสอบถาม</h4></button>
                     </a>
                     <br />
                     <a href={'/survey-management/'+this.props.surveyId+'/define_analyse'} >
-                        <button type="button" className="btn-lg btn-primary" style={{ marginTop: `1.5%` }}><h4>กำหนดผลลัพธ์แสดงผลเป็นรายบุคคล</h4></button>
+                        <button type="button" className="btn btn-lg btn-primary" style={{ marginTop: `1.5%` }}><h4>กำหนดผลลัพธ์แสดงผลเป็นรายบุคคล</h4></button>
                     </a>
                 </section>
             </div>

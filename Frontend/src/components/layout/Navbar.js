@@ -24,7 +24,6 @@ class Navbar extends Component {
                 this.setState({
                     countRequests: response.data
                 })
-                console.log(this.state.countRequests)
             })
             .catch((error) => {
                 console.log(error);
@@ -185,8 +184,6 @@ class Navbar extends Component {
                             </ul>
                         </div>
                     </nav>
-                    {console.log(this.props.auth.isAuthenticated)}
-                    {console.log(this.props.auth.user.role)}
                 </header>
             </div>
 

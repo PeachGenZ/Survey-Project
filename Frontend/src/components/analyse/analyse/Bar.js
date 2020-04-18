@@ -7,7 +7,7 @@ class Bar extends Component {
     super(props)
     this.state = {
       result:"",
-      already:"",
+      already:false,
     }
   }
 
@@ -17,6 +17,7 @@ class Bar extends Component {
       .then(response => {
           this.setState({
               result:response.data[0].result,
+              already:true
           })                           
           //console.log(this.state.result)
       })
@@ -40,7 +41,6 @@ class Bar extends Component {
     if(this.state.result){
       for(let i=0; i<this.state.result.length; i++){
         if(this.state.result[i].mean != null){
-          this.state.already = true
           value.push(this.state.result[i].mean.toFixed(3))
         }
       }

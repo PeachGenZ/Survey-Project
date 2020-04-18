@@ -51,8 +51,8 @@ class Gender extends Component {
     let total = male + female
     return (
       <div>
-        <h1>{(male) ? ((male/total)*100).toFixed(0)+"%" : ""}
-        <span style={{ marginLeft: '33%' }}>{(female) ? ((female/total)*100).toFixed(0)+"%" : ""}</span></h1>
+        <h1>{(male) ? ((male/total)*100).toFixed(0)+"%" : "0%"}
+        <span style={{ marginLeft: '33%' }}>{(female) ? ((female/total)*100).toFixed(0)+"%" : "0%"}</span></h1>
         <h3 style={{ margin: '2%' }}>เพศ</h3>
         <table className="table table-bordered">
         <thead>

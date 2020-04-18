@@ -88,7 +88,7 @@ class Informations extends Component {
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
-            <Tab />
+            <Tab tab="tab1"/>
             {this.state.answers ? this.showComponent():<h2><i className="fa fa-ban" /> ยังไม่มีการตอบแบบสอบถามขณะนี้</h2>}
           </div>
       </div>

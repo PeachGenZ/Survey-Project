@@ -36,7 +36,7 @@ class Compare extends Component {
           <div className="text-center">
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
-            <Tab />
+            <Tab tab="tab2"/>
             <CompareControl />
           </div>
           <div style={{ marginTop: '60px' }}>

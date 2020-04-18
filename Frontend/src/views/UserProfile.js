@@ -93,7 +93,7 @@ class UserProfile extends Component {
         this.state.data[3] = this.state.description;
 
         var request = {
-            userId: "5e9439b122a3f45b40fc4c9e",// ADMIN ID
+            userId: "5e81e73ea3b5ac1b686929e4",// ADMIN ID
             typeRequest: "upgrade",
             data: this.state.data
         }
@@ -124,7 +124,12 @@ class UserProfile extends Component {
                         <div className="col-md-6">
                             <div className="box box-primary">
                                 <div className="box-body box-profile">
-                                    <img className="profile-user-img img-responsive img-circle" src="/dist/img/user2-160x160.jpg" alt="User" />
+                                    <img className="profile-user-img img-responsive img-circle" src={this.props.auth.user.role === "ADMIN" ?
+                                        "/dist/img/admin.png"
+                                        : this.props.auth.user.role === "RESEARCHER" ?
+                                            "/dist/img/researcher.png"
+                                            : "/dist/img/responder.png"
+                                    } alt="User" />
                                     <h4 className="profile-username text-center">{this.state.user.firstname + " " + this.state.user.lastname}</h4>
                                     <p className="text-muted text-center">{this.state.user.role}</p>
                                     <Can

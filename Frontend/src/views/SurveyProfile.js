@@ -6,13 +6,14 @@ import axios from 'axios';
 class SurveyProfile extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             survey: {},
             project: [],
             already: false,
-            dateToDo: []
+            dateToDo: [],
+            ownSurvey: true
         };
-
         this.showComponent = this.showComponent.bind(this);
         this.shareTo = this.shareTo.bind(this);
         this.wantName = this.wantName.bind(this);
@@ -50,13 +51,19 @@ class SurveyProfile extends Component {
                 })
         }
 
-        await axios.get(`/projects/find/` + this.state.survey.userId)
+        if (await this.state.survey.userId !== this.props.auth.user.id) {
+            this.setState({
+                ownSurvey: false
+            })
+        }
+
+        await axios.get(`/projects/` + this.state.survey.projectId)
             .then(response => {
                 this.setState({
                     project: response.data,
                     already: true
                 })
-                console.log(this.state.project[0]);
+                console.log(this.state.project);
             })
             .catch((error) => {
                 console.log(error);
@@ -121,8 +128,20 @@ class SurveyProfile extends Component {
         )
     }
 
+    showStatus() {
+        if (this.state.survey.status === "ONLINE") return <small><i className="fa fa-circle text-success" /> ออนไลน์</small>
+        else if (this.state.survey.status === "PAUSE") return <small><i className="fa fa-circle text-warning" /> หยุดรับข้อมูลชั่วคราว</small>
+        else if (this.state.survey.status === "FINISH") return <small><i className="fa fa-circle text-danger" /> ปิดรับข้อมูล</small>
+    }
+
     goToProject() {
         window.location = "/project-management/" + this.state.survey.projectId
+    }
+
+    showButtonDoSurvey() {
+        if (this.state.survey.status === "ONLINE") return <button className="btn btn-success btn-sm" onClick={() => window.location = "/online-survey/" + this.state.survey._id}>ทำแบบสอบถาม</button>
+        else if (this.state.survey.status === "PAUSE") return <button className="btn btn-success btn-sm" disabled>ทำแบบสอบถาม</button>
+        else if (this.state.survey.status === "FINISH") return ""
     }
 
     showComponent() {
@@ -130,13 +149,23 @@ class SurveyProfile extends Component {
             <div>
                 <section className="content-header">
                     <h1>
-                        <i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}
+                        <i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey} {this.showStatus()}
+                        &nbsp;&nbsp;
+                        {this.state.ownSurvey ?
+                            "" : this.showButtonDoSurvey()
+                        }
+
                     </h1>
-                    <ol className="breadcrumb">
-                        <li ><a href="/requests"><i className="fa fa-envelope-o" /> คำร้องขอ</a></li>
-                        <li ><a onClick={this.goToProject.bind(this)}><i className="fa fa-folder-o" /> {this.state.project[0].nameProject}</a></li>
-                        <li className="active"><i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}</li>
-                    </ol>
+
+                    {this.state.ownSurvey ?
+                        <ol className="breadcrumb">
+                            <li ><a href="/requests"><i className="fa fa-envelope-o" /> คำร้องขอ</a></li>
+                            <li ><a onClick={this.goToProject.bind(this)}><i className="fa fa-folder-o" /> {this.state.project.nameProject}</a></li>
+                            <li className="active"><i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}</li>
+                        </ol>
+                        : ""
+                    }
+
                 </section>
                 <br />
                 <section className="content">
@@ -208,7 +237,7 @@ class SurveyProfile extends Component {
                                         </div>
                                     </div>
                                     {this.dateToDo()}
-                                    <br/>
+                                    <br />
                                 </div>
                                 : ""
                             }

@@ -4,6 +4,7 @@ const rules = {
     },
     RESPONDER: {
         static: [
+            "navbar:upgrade",
             "navbar:banner",
             "navbar:toggle-button",
             "navbar:request",
@@ -14,12 +15,6 @@ const rules = {
             "user-profile:upgrade",
             "survey-management:survey-profile",
         ],
-        /*dynamic: {
-            "posts:edit": ({ userId, postOwnerId }) => {
-                if (!userId || !postOwnerId) return false;
-                return userId === postOwnerId;
-            }
-        }*/
     },
     RESEARCHER: {
         static: [
@@ -36,12 +31,21 @@ const rules = {
             "user-profile:show-more-profile",
             "survey-management:survey-profile",
         ],
-       /* dynamic: {
-            "posts:edit": ({ userId, postOwnerId }) => {
-                if (!userId || !postOwnerId) return false;
-                return userId === postOwnerId;
+        dynamic: {
+            "listSurvey:delete": ({ userId, surveyOwnerId }) => {
+                if (!userId || !surveyOwnerId) return false;
+                return userId === surveyOwnerId;
+            },
+            "listSampleGroup:delete": ({ userId, surveyOwnerId }) => {
+                if (!userId || !surveyOwnerId) return false;
+                return userId === surveyOwnerId;
+            },
+            "list-project:delete-project": ({ userId, surveyOwnerId }) => {
+                if (!userId || !surveyOwnerId) return false;
+                return userId === surveyOwnerId;
             }
-        }*/
+
+        }
     },
     ADMIN: {
         static: [
@@ -58,6 +62,8 @@ const rules = {
             "sidebar:all-project",
             "survey-management:survey-profile",
             "list-project:delete-project",
+            "listSurvey:delete",
+            "listSampleGroup:delete"
         ]
     }
 };

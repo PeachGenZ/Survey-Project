@@ -13,7 +13,6 @@ import PrivateAdminRoute from "./components/private-route/PrivateAdminRoute";
 
 import Navbar from './components/layout/Navbar'
 import Sidebar from './components/layout/Sidebar'
-import Footer from './components/layout/Footer'
 import Landing from './components/layout/Landing'
 import Register from './components/auth/Register';
 import Login from './components/auth/Login';

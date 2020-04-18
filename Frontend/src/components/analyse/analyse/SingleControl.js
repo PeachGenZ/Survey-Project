@@ -62,7 +62,7 @@ class SingleControl extends Component {
                         <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
                         <p style={{ color: '#79a0d2' }}>*ฟังก์ชันการแปลความใช้ได้ดีก็ต่อเมื่อทุกคำถามมีจำนวนตัวเลือกและค่าของตัวเลือกเท่ากัน</p>
                         <input type="text" className="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" ref='result'></input>
-                        <button type="button" className="btn btn-primary btn-lg" style={{margin: `15px`}} onClick={() => this.onSubmit()}>ยืนยัน</button>
+                        <button type="button" className="btn btn-success btn-lg" style={{margin: `15px`}} onClick={() => this.onSubmit()}>ยืนยัน</button>
                     </div>
                 </div>
                 <hr/>

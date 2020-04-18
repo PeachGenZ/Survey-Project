@@ -88,7 +88,7 @@ class ProjectManagement extends Component {
 
     async componentDidUpdate(prevProps, prevState) {
         if (prevState.success !== this.state.success) {
-            await axios.get(`/sampleGroups/` + this.props.match.params.projectId)
+            await axios.get(`http://localhost:5000/sampleGroups/` + this.props.match.params.projectId)
                 .then(response => {
                     this.setState({
                         sampleGroups: response.data
@@ -121,8 +121,8 @@ class ProjectManagement extends Component {
         return (
             this.state.surveys.map(res => {
                 if (res.sampleGroupId === "") {
-                    if (res.status === "ONLINE") {
-                        return <ListSurvey survey={res} />
+                    if (res.status !== "DRAFT") {
+                        return <ListSurvey survey={res} projectId={this.props.match.params.projectId}/>
                     }
                 }
             })
@@ -134,7 +134,7 @@ class ProjectManagement extends Component {
             this.state.surveys.map(res => {
                 if (res.sampleGroupId === "") {
                     if (res.status === "DRAFT") {
-                        return <ListSurvey survey={res} />
+                        return <ListSurvey survey={res} projectId={this.props.match.params.projectId}/>
                     }
                 }
             })

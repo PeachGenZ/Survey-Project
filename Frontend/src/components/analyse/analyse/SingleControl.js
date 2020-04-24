@@ -4,11 +4,11 @@ import axios from 'axios'
 class SingleControl extends Component {
     constructor(props) {
         super(props)
-        this.onSubmit = this.onSubmit.bind(this)
         this.state = {
             linkertScale:"",
             analyseId:"",
         }
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
     componentDidMount () {
@@ -27,12 +27,11 @@ class SingleControl extends Component {
 
     onSubmit() {
         try {
-            var text = this.refs.result
+            let text = this.refs.result
             const textSplit = {
-                linkertScale:text.value.split(',')
+                linkertScale:text.value.split(','),
             }
             axios.post(`/analyse/add/${this.state.analyseId}`, textSplit)
-            //console.log('👉 Success');
         } catch (e) {
             console.log(`😱 Axios request failed: ${e}`);
         }

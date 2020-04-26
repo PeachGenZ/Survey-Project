@@ -77,6 +77,11 @@ class OnlineSurvey extends Component {
             edate: 0,
             emonth: 0,
             eyear: 0,
+            result:"",
+            data:"",
+            userResultId:"",
+            topic:"",
+            description:"",
         };
         this.onComplete = this.onComplete.bind(this);
         this.encryptAnswer = this.encryptAnswer.bind(this);
@@ -104,7 +109,8 @@ class OnlineSurvey extends Component {
                     edate: response.data.openAndCloseTimes.end.day,
                     emonth: response.data.openAndCloseTimes.end.month,
                     eyear: response.data.openAndCloseTimes.end.year,
-                    checkSurvey: true
+                    checkSurvey: true,
+                    data: JSON.parse(response.data.data),
                 })
                 console.log(this.state.survey);
                 console.log(this.state.title);
@@ -151,6 +157,18 @@ class OnlineSurvey extends Component {
             .catch((error) => {
                 console.log(error);
             })
+        //ดึงข้อมูลจาก userResult
+        await axios.get(`/userResult/find/` + surveyId)
+            .then(response => {
+                this.setState({
+                    result: response.data[0],
+                    userResultId: response.data[0]._id,
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
         //ดึงข้อมูลจาก followResult
         if (await this.state.survey.shareTo === "OPEN" || this.state.survey.shareTo === "CLOSE") {
             axios.get(`/followResults/find/${surveyId}/${userId}`)
@@ -514,7 +532,6 @@ class OnlineSurvey extends Component {
                     }
                 })
             }
-            console.log(this.state.resultAsString);
         } else if (await this.state.survey.shareTo === "CLOSE" || this.state.survey.shareTo === "OPEN") {
             //var resultAsString = result.data;
             this.setState({
@@ -537,7 +554,6 @@ class OnlineSurvey extends Component {
                     }
                 })
             }
-            console.log(this.state.resultAsString);
         } else {
             if (await this.state.survey.wantName) {
                 if (name === "") {
@@ -567,6 +583,7 @@ class OnlineSurvey extends Component {
                 })
             }
         }
+        this.sendResult()
     }
 
     async sendData() {
@@ -787,6 +804,313 @@ class OnlineSurvey extends Component {
 
     onChange = e => this.setState({ [e.target.id]: e.target.value })
 
+    preProcess(){
+        let length=0
+        let resultArray=[]
+        let choicesArray=[]
+        let result={
+            name:"",
+            title:"",
+            type: "",
+            choicesArray,
+        }
+        let choices={
+            text: "",
+            value: "",
+            select: Number,
+        }
+
+        if(this.state.data.pages){
+            length=this.state.data.pages.length
+            for(var i = 0; i < length; i++) {
+                for(var j = 0; j < this.state.data.pages[i].elements.length; j++){
+                    choicesArray=[]
+                    for(var k = 0; k < this.state.data.pages[i].elements[j].choices.length; k++){
+                        choices={
+                            text:this.state.data.pages[i].elements[j].choices[k].text,
+                            value:this.state.data.pages[i].elements[j].choices[k].value,
+                        }
+                        choicesArray.push(
+                            choices
+                        )
+                    }
+                    
+                    result={
+                        name:this.state.data.pages[i].elements[j].name,
+                        title:this.state.data.pages[i].elements[j].title,
+                        type:this.state.data.pages[i].elements[j].type,
+                        choicesArray,
+                      }
+            
+                    resultArray.push(result)
+                }
+            }
+        }
+        return resultArray
+    }
+
+    calculate(){
+        let result=this.preProcess()
+        let userScore = 0
+        
+        if(this.state.data){
+            for(var i = 0; i < result.length; i++) {
+                for(var j = 0; j < result[i].choicesArray.length; j++){
+                    if(result[i].type === 'radiogroup'){
+                        if(result[i].choicesArray[j].value === this.state.resultAsString.resultAsString[result[i].name]){
+                            userScore+=parseInt(this.state.resultAsString.resultAsString[result[i].name])
+                        }
+                    }else if(result[i].type === 'checkbox'){
+                        for(var l=0; l < this.state.resultAsString.resultAsString[result[i].name].length; l++){
+                            if(result[i].choicesArray[j].value === this.state.resultAsString.resultAsString[result[i].name][l]){
+                                userScore+=parseInt(this.state.resultAsString.resultAsString[result[i].name][l])
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return userScore
+    }
+
+    resultCalculate(userScore){
+
+        if(this.state.result.setResult[0].calculate.gender){
+            let maleScore = parseFloat(this.state.result.setResult[0].calculate.gender.male.score)
+            let femaleScore = parseFloat(this.state.result.setResult[0].calculate.gender.female.score)
+
+            if(this.state.result.setResult[0].calculate.gender.male.calculate === "บวก"){
+                userScore += maleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.male.calculate === "ลบ"){
+                userScore -= maleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.male.calculate === "คูณ"){
+                userScore *= maleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.male.calculate === "หาร"){
+                userScore /= maleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.female.calculate === "บวก"){
+                userScore += femaleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.female.calculate === "ลบ"){
+                userScore -= femaleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.female.calculate === "คูณ"){
+                userScore *= femaleScore
+            }
+            if(this.state.result.setResult[0].calculate.gender.female.calculate === "หาร"){
+                userScore /= femaleScore
+            }
+        }
+        
+
+        if(this.state.result.setResult[0].calculate.ages){
+            let age1823 = parseFloat(this.state.result.setResult[0].calculate.ages.age1823.score)
+            let age2429 = parseFloat(this.state.result.setResult[0].calculate.ages.age2429.score)
+            let age3035 = parseFloat(this.state.result.setResult[0].calculate.ages.age3035.score)
+            let age3641 = parseFloat(this.state.result.setResult[0].calculate.ages.age3641.score)
+            let age4247 = parseFloat(this.state.result.setResult[0].calculate.ages.age4247.score)
+            let age4853 = parseFloat(this.state.result.setResult[0].calculate.ages.age4853.score)
+            let age5460 = parseFloat(this.state.result.setResult[0].calculate.ages.age5460.score)
+            let age60 = parseFloat(this.state.result.setResult[0].calculate.ages.age60.score)
+
+            if(this.state.result.setResult[0].calculate.ages.age1823.score === "บวก"){
+                userScore += age1823
+            }
+            if(this.state.result.setResult[0].calculate.ages.age1823.score === "ลบ"){
+                userScore -= age1823
+            }
+            if(this.state.result.setResult[0].calculate.ages.age1823.score === "คูณ"){
+                userScore *= age1823
+            }
+            if(this.state.result.setResult[0].calculate.ages.age1823.score === "หาร"){
+                userScore /= age1823
+            }
+            if(this.state.result.setResult[0].calculate.ages.age2429.score === "บวก"){
+                userScore += age2429
+            }
+            if(this.state.result.setResult[0].calculate.ages.age2429.score === "ลบ"){
+                userScore -= age2429
+            }
+            if(this.state.result.setResult[0].calculate.ages.age2429.score === "คูณ"){
+                userScore *= age2429
+            }
+            if(this.state.result.setResult[0].calculate.ages.age2429.score === "หาร"){
+                userScore /= age2429
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3035.score === "บวก"){
+                userScore += age3035
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3035.score === "ลบ"){
+                userScore -= age3035
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3035.score === "คูณ"){
+                userScore *= age3035
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3035.score === "หาร"){
+                userScore /= age3035
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3641.score === "บวก"){
+                userScore += age3641
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3641.score === "ลบ"){
+                userScore -= age3641
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3641.score === "คูณ"){
+                userScore *= age3641
+            }
+            if(this.state.result.setResult[0].calculate.ages.age3641.score === "หาร"){
+                userScore /= age3641
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4247.score === "บวก"){
+                userScore += age4247
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4247.score === "ลบ"){
+                userScore -= age4247
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4247.score === "คูณ"){
+                userScore *= age4247
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4247.score === "หาร"){
+                userScore /= age4247
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4853.score === "บวก"){
+                userScore += age4853
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4853.score === "ลบ"){
+                userScore -= age4853
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4853.score === "คูณ"){
+                userScore *= age4853
+            }
+            if(this.state.result.setResult[0].calculate.ages.age4853.score === "หาร"){
+                userScore /= age4853
+            }
+            if(this.state.result.setResult[0].calculate.ages.age5460.score === "บวก"){
+                userScore += age5460
+            }
+            if(this.state.result.setResult[0].calculate.ages.age5460.score === "ลบ"){
+                userScore -= age5460
+            }
+            if(this.state.result.setResult[0].calculate.ages.age5460.score === "คูณ"){
+                userScore *= age5460
+            }
+            if(this.state.result.setResult[0].calculate.ages.age5460.score === "หาร"){
+                userScore /= age5460
+            }
+            if(this.state.result.setResult[0].calculate.ages.age60.score === "บวก"){
+                userScore += age60
+            }
+            if(this.state.result.setResult[0].calculate.ages.age60.score === "ลบ"){
+                userScore -= age60
+            }
+            if(this.state.result.setResult[0].calculate.ages.age60.score === "คูณ"){
+                userScore *= age60
+            }
+            if(this.state.result.setResult[0].calculate.ages.age60.score === "หาร"){
+                userScore /= age60
+            }
+        }
+
+        if(this.state.result.setResult[0].calculate.status){
+            let single = parseFloat(this.state.result.setResult[0].calculate.status.single.score)
+            let marry = parseFloat(this.state.result.setResult[0].calculate.status.marry.score)
+            let separated = parseFloat(this.state.result.setResult[0].calculate.status.separated.score)
+
+            if(this.state.result.setResult[0].calculate.status.single.score === "บวก"){
+                userScore += single
+            }
+            if(this.state.result.setResult[0].calculate.status.single.score === "ลบ"){
+                userScore -= single
+            }
+            if(this.state.result.setResult[0].calculate.status.single.score === "คูณ"){
+                userScore *= single
+            }
+            if(this.state.result.setResult[0].calculate.status.single.score === "หาร"){
+                userScore /= single
+            }
+            if(this.state.result.setResult[0].calculate.status.marry.score === "บวก"){
+                userScore += marry
+            }
+            if(this.state.result.setResult[0].calculate.status.marry.score === "ลบ"){
+                userScore -= marry
+            }
+            if(this.state.result.setResult[0].calculate.status.marry.score === "คูณ"){
+                userScore *= marry
+            }
+            if(this.state.result.setResult[0].calculate.status.marry.score === "หาร"){
+                userScore /= marry
+            }
+            if(this.state.result.setResult[0].calculate.status.separated.score === "บวก"){
+                userScore += separated
+            }
+            if(this.state.result.setResult[0].calculate.status.separated.score === "ลบ"){
+                userScore -= separated
+            }
+            if(this.state.result.setResult[0].calculate.status.separated.score === "คูณ"){
+                userScore *= separated
+            }
+            if(this.state.result.setResult[0].calculate.status.separated.score === "หาร"){
+                userScore /= separated
+            }
+    
+        }
+        
+        return userScore
+    }
+
+    sendResult(){
+        let topic=""
+        let description=""
+        let score=this.calculate()
+        let resultScore=(this.state.result ? this.resultCalculate(score) :"")
+
+        for(let i=0; i<this.state.result.setResult[0].result.length; i++){
+            let min=parseFloat(this.state.result.setResult[0].result[i].min) 
+            let max=parseFloat(this.state.result.setResult[0].result[i].max) 
+            if(resultScore >= min && resultScore <= max){
+                topic=this.state.result.setResult[0].result[i].topic 
+                description=this.state.result.setResult[0].result[i].description 
+
+                const userResult={
+                    topic:topic,
+                    description:description,
+                    sample:"-",
+                    date:""
+                }
+
+                if (this.props.answer) {
+                    this.props.answer(userResult)
+                }
+            }
+        }  
+        const timestamp = Date.now();
+        const result={
+            name:this.props.auth.user.firstname + " " + this.props.auth.user.lastname,
+            topic:topic,
+            sample:"-",
+            date:new Intl.DateTimeFormat('th', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
+        }
+        
+        let resultOld = this.state.result.userResult
+        if(resultOld !== null){
+            resultOld.push(result)
+        }else{
+            resultOld=result
+        }
+        
+        const userResult={
+            setResult:this.state.result.setResult[0],
+            userResult:resultOld
+        }
+
+        axios.post(`/userResult/edit/${this.state.userResultId}`, userResult)
+        .then(res => console.log(res))
+        console.log("ส่งข้อมูลแล้ว")
+    }
+
     confirm() {
         if (this.state.dontWantEncrypt) {
             this.setState({
@@ -824,7 +1148,6 @@ class OnlineSurvey extends Component {
                         }, checkEncrypt: true
                     })
                 }
-                console.log(this.state.resultAsString);
             } else if (this.state.survey.shareTo === "CLOSE" || this.state.survey.shareTo === "OPEN") {
                 if (this.state.survey.wantName) {
                     this.setState({
@@ -843,7 +1166,6 @@ class OnlineSurvey extends Component {
                         }, checkEncrypt: true
                     })
                 }
-                console.log(this.state.resultAsString);
             }
         }
     }

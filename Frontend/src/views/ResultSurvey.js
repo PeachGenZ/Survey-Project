@@ -5,14 +5,14 @@ import axios from 'axios';
 
 class ResultSurvey extends Component {
     constructor(props) {
-        super(props);
+        super(props)
 
         this.state = {
-            name: ""
+            name: "",
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const surveyId = this.props.surveyId;
         const name = this.props.name;
 
@@ -25,7 +25,6 @@ class ResultSurvey extends Component {
                 } else {
                     if (this.props.name !== "") this.setState({ name: name })
                     else this.setState({ name: this.props.auth.user.firstname + " " + this.props.auth.user.lastname })
-
                 }
 
             })
@@ -38,12 +37,12 @@ class ResultSurvey extends Component {
         window.location = "/requests";
     }
 
-    render() {
+    showComponent(){
         return (
             <div style={{fontSize:"30px"}}>
                 <br/><br/><br/><br/>
                 <div className="row text-center">
-                    ขอบคุณ{this.state.name !== "NONAME" ? " คุณ"+this.state.name+" ":""}เป็นอย่างมาก
+                    ขอบคุณ {this.state.name !== "NONAME" ? " คุณ"+this.state.name+" ":""} เป็นอย่างมาก
                 </div>
                 <div className="row text-center">
                     ที่ให้ความร่วมมือในการเก็บข้อมูลเพื่อทำงานวิจัย
@@ -52,6 +51,23 @@ class ResultSurvey extends Component {
                 <div className="row text-center">
                     <button className="btn btn-success" onClick={this.goToMainPage}>กลับสู่หน้าหลัก</button>
                 </div>
+            </div>
+        )
+    }
+
+    showResult(){
+        return (
+            <div className="text-center" style={{marginTop:'17%' , width:'60%', marginLeft:'20%'}} >
+                <h1>{this.props.answer.topic}</h1>
+                <h3>{this.props.answer.description}</h3>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div>
+                {this.props.answer ?  this.showResult() : this.showComponent()}
             </div>
         )
     }

@@ -51,18 +51,20 @@ class SingleControl extends Component {
                 <div className="container card" style={{width: '60%', marginTop: `25px`}}>
                     <div className="container-fluid">
                         <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                            <div className="dropdown" style={{margin: `20px`}}>
-                            </div>
+                        <select className="form-control text-center" value={this.state.value} onChange={this.handleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
+                            <option value="1">ไม่มีกลุ่มตัวอย่าง</option>
+                        </select>
                     </div>
                 </div>
                 <hr/>
                 <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-                    <div>
+                <form onSubmit={this.onSubmit}>
                         <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
                         <p style={{ color: '#79a0d2' }}>*ฟังก์ชันการแปลความใช้ได้ดีก็ต่อเมื่อทุกคำถามมีจำนวนตัวเลือกและค่าของตัวเลือกเท่ากัน</p>
                         <input type="text" className="form-control" placeholder="ป้อนผลลัพธ์" aria-label="ป้อนผลลัพธ์" ref='result'></input>
-                        <button type="button" className="btn btn-success btn-lg" style={{margin: `15px`}} onClick={() => this.onSubmit()}>ยืนยัน</button>
-                    </div>
+                        <p style={{marginTop:'1%'}}>ผลลัพธ์ที่บันทึกไว้: {this.state.linkertScale + "  "}  </p>
+                        <button className="btn btn-success btn-lg" style={{margin: `15px`}} >ยืนยัน</button>
+                    </form>
                 </div>
                 <hr/>
             </div> 

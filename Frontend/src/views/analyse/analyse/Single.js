@@ -48,6 +48,7 @@ class Single extends Component {
             <SingleControl surveyId={surveyId}/>
           </div>
           <div style={{ marginTop: '60px' }}>
+            
             <Table1 surveyId={surveyId}/>
             <div style={{ marginLeft: '5%' }, {marginTop: '5%'}}>
               <Bar surveyId={surveyId}/>

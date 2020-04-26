@@ -7,6 +7,10 @@ class Analyse extends Component {
     this.state = {
       survey:"",
       widget:"",      
+      checkResult:undefined,
+      userResultId:"",
+      answerId:"",
+      amountAnswer:"",
       
       gender:false,
       ages:false,
@@ -23,30 +27,30 @@ class Analyse extends Component {
         job:false,
         income:false,
       },
-      maleCalculate:"",
-      femaleCalculate:"",
-      age1823Calculate:"",
-      age2429Calculate:"",
-      age3035Calculate:"",
-      age3641Calculate:"",
-      age4247Calculate:"",
-      age4853Calculate:"",
-      age5460Calculate:"",
-      age60Calculate:"",
-      singleCalculate:"",
-      marryCalculate:"",
-      separatedCalculate:"",
+      maleCalculate:"บวก",
+      femaleCalculate:"บวก",
+      age1823Calculate:"บวก",
+      age2429Calculate:"บวก",
+      age3035Calculate:"บวก",
+      age3641Calculate:"บวก",
+      age4247Calculate:"บวก",
+      age4853Calculate:"บวก",
+      age5460Calculate:"บวก",
+      age60Calculate:"บวก",
+      singleCalculate:"บวก",
+      marryCalculate:"บวก",
+      separatedCalculate:"บวก",
 
       result:[{
         topic:"",
-        min:"",
-        max:"",
+        min:0,
+        max:0,
         description:"",
       }],
     }
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     const surveyId = this.props.match.params.surveyId;
     axios.get(`/surveys/find/` + surveyId)
       .then(response => {
@@ -54,7 +58,28 @@ class Analyse extends Component {
               survey: response.data,
               widget: response.data.builtIns
           })
-          console.log(this.state.survey)
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+    
+    axios.get(`/userResult/find/` + surveyId)
+      .then(response => {
+          this.setState({
+              checkResult: response.data,
+              userResultId: response.data[0]._id,
+          })
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+
+    await axios.get(`/answers/find/` + surveyId)
+      .then(response => {
+          this.setState({
+            answerId:response.data[0]._id,
+            amountAnswer:response.data[0].amountAnswer,
+          })
       })
       .catch((error) => {
           console.log(error);
@@ -98,7 +123,113 @@ class Analyse extends Component {
   };
 
   handleSubmit = evt => {
-    console.log(this.state.result)
+    let gender=null
+    let ages=null
+    let status=null
+
+    if(this.state.gender){
+      gender={
+        male:{
+          score:this.refs.male.value,
+          calculate:this.state.maleCalculate
+        },
+        female:{
+          score:this.refs.female.value,
+          calculate:this.state.femaleCalculate
+        }
+      }
+    }
+    if(this.state.ages){
+      ages={
+        age1823:{
+          score:this.refs.age1823.value,
+          calculate:this.state.age1823Calculate
+        },
+        age2429:{
+          score:this.refs.age2429.value,
+          calculate:this.state.age2429Calculate
+        },
+        age3035:{
+          score:this.refs.age3035.value,
+          calculate:this.state.age3035Calculate
+        },
+        age3641:{
+          score:this.refs.age3641.value,
+          calculate:this.state.age3641Calculate
+        },
+        age4247:{
+          score:this.refs.age4247.value,
+          calculate:this.state.age4247Calculate
+        },
+        age4853:{
+          score:this.refs.age4853.value,
+          calculate:this.state.age4853Calculate
+        },
+        age5460:{
+          score:this.refs.age5460.value,
+          calculate:this.state.age5460Calculate
+        },
+        age60:{
+          score:this.refs.age60.value,
+          calculate:this.state.age60Calculate
+        }
+      }
+    }
+    if(this.state.status){
+      status={
+        single:{
+          score:this.refs.single.value,
+          calculate:this.state.singleCalculate
+        },
+        marry:{
+          score:this.refs.marry.value,
+          calculate:this.state.marryCalculate
+        },
+        separated:{
+          score:this.refs.separated.value,
+          calculate:this.state.separatedCalculate
+        },
+      }
+    }
+    
+    let setResult={
+      result:this.state.result,
+      calculate:{
+        gender,
+        ages,
+        status,
+      }
+    }
+
+    if(this.state.checkResult !== undefined){
+      try {
+        const resultOld = this.state.checkResult.userResult
+        const editUserResult={
+            setResult:setResult,
+            userResult:resultOld
+        }
+        axios.post(`/userResult/add/${this.state.userResultId}`, editUserResult)
+          .then(res => console.log(res))
+      } catch (e) {
+          console.log(`😱 Axios request failed: ${e}`);
+      }
+    }
+    else{
+      try {
+        const answerId = this.state.answerId
+        const surveyId = this.props.match.params.surveyId
+        const createUserResult = {
+          answerId:answerId,
+          surveyId:surveyId,
+          setResult:setResult,
+          userResult:null
+        }
+        axios.post(`/userResult/create/`, createUserResult)
+        console.log('👉 create data');
+      } catch (e) {
+        console.log(`😱 Axios request failed: ${e}`);
+      }
+    }
   };
 
   handleAddResult = () => {
@@ -172,7 +303,7 @@ class Analyse extends Component {
           </div>
 
           <div>
-            <div className="input-group" style={{marginBottom:'10%', marginTop:'10%'}}>
+            <div className="input-group" style={{marginBottom:'10%', marginTop:'2%'}}>
               <h2>การคำนวณเพิ่มเติม</h2>
               <div>
                 {this.widgetCheck()}
@@ -371,8 +502,8 @@ class Analyse extends Component {
             </div>
 
             <div className='text-center' style={{marginBottom:'10%', marginTop:'1.5%'}}>
-                {/*<button className="btn btn-success btn-lg" style={{margin: `15px`}}>ยืนยัน</button>*/}
-                <button type="button" className="btn btn-success btn-lg" style={{margin: `1%`}} onClick={() => this.handleSubmit()}>ยืนยัน</button>
+              <button className="btn btn-success btn-lg" style={{margin: `15px`}}>ยืนยัน</button>
+              {/*<button type="button" className="btn btn-success btn-lg" style={{margin: `1%`}} onClick={() => this.handleSubmit()}>ยืนยัน</button>*/}
             </div>
           </div>
         </form>

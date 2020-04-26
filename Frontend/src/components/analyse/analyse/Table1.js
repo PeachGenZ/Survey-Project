@@ -259,7 +259,6 @@ class Table1 extends Component {
       } catch (e) {
         console.log(`😱 Axios request failed: ${e}`);
       }
-      
     }
   }
 

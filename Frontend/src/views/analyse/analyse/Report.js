@@ -6,7 +6,8 @@ class Report extends Component {
   constructor(props){
     super(props)
     this.state = {
-      survey:""
+      survey:"",
+      report:""
     }
   }
 
@@ -16,6 +17,16 @@ class Report extends Component {
       .then(response => {
           this.setState({
               survey: response.data,
+          })
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+    
+    axios.get(`/userResult/find/` + surveyId)
+      .then(response => {
+          this.setState({
+            report: response.data[0].userResult
           })
       })
       .catch((error) => {
@@ -39,20 +50,22 @@ class Report extends Component {
               <th scope="col" className="text-center">ลำดับ</th>
               <th scope="col" className="text-center">ชื่อ</th>
               <th scope="col" className="text-center">กลุ่มตัวอย่าง</th>
-              <th scope="col" className="text-center">วัน/เดือน/ปี</th>
-              <th scope="col" className="text-center">เวลา</th>
+              <th scope="col" className="text-center">วัน/เดือน/ปี เวลา</th>
               <th scope="col" className="text-center">ผลลัพธ์</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="text-center">1</td>
-              <td className="text-center">Robert</td>
-              <td className="text-center">ผู้ที่เดินทางกลับจากต่างประเทศ</td>
-              <td className="text-center">10/03/2563</td>
-              <td className="text-center">09:40 น.</td>
-              <td className="text-center">มีความเสี่ยงต่อการติดเชื้อ</td>
-            </tr>
+          { (this.state.report) ? this.state.report.map( (data, index) => {
+            return (
+              <tr key={ index }>
+                <td className="text-center">{ index+1 }</td>
+                <td className="text-center">{data.name}</td>
+                <td className="text-center">{data.sample}</td>
+                <td className="text-center">{data.date}</td>
+                <td className="text-center">{data.topic}</td>
+              </tr>
+            )
+          }) : <tr><td colSpan="6" className="text-center">ไม่มีข้อมูล...</td></tr> }
           </tbody>
           </table>
           </div>

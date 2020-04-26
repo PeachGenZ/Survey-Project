@@ -58,8 +58,13 @@ class ResultSurvey extends Component {
     showResult(){
         return (
             <div className="text-center" style={{marginTop:'17%' , width:'60%', marginLeft:'20%'}} >
-                <h1>{this.props.answer.topic}</h1>
+                <h1>ขอบคุณ {this.state.name}</h1>
+                <h1 style={{marginTop:'1%'}}>{this.props.answer.topic}</h1>
                 <h3>{this.props.answer.description}</h3>
+                <br/>
+                <div className="row text-center">
+                    <button className="btn btn-success" onClick={this.goToMainPage}>กลับสู่หน้าหลัก</button>
+                </div>
             </div>
         )
     }

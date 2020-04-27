@@ -51,7 +51,8 @@ class DataPie extends Component {
               '#36A2EB',
               '#FFCE56',
               '#69ff6c',
-              '#ffb27a'
+              '#ffb27a',
+              '#9fb27a',
               ],
               hoverBackgroundColor: [
               '#FF6384',

@@ -44,6 +44,7 @@ router.route('/findSG/:projectId/:name').get((req, res) => {
         .then(sampleGroup => res.json(sampleGroup))
         .catch(err => res.status(400).json('Error: ' + err));
 });
+
 router.route('/edit/:id').post((req, res) => {
     SampleGroup.findById(req.params.id)
         .then(sampleGroup => {

@@ -37,16 +37,11 @@ class Compare extends Component {
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab tab="tab2"/>
-            <CompareControl surveyId={surveyId}/>
+            
           </div>
           <div style={{ marginTop: '60px' }}>
             <h1 className="text-center">กลุ่มตัวอย่างที่ 1</h1>
-            <Table1 surveyId={surveyId}/>
-            {/*<h1 className="text-center" style={{ marginTop: `80px` }}>กลุ่มตัวอย่างที่ 2</h1>
-            <Table2 />*/}
-            <div style={{ marginLeft: '5%' }, {marginTop: '5%'}}>
-              <Bar surveyId={surveyId}/>
-            </div>
+            <Table2 surveyId={surveyId}/>
           </div>
       </div>
     )

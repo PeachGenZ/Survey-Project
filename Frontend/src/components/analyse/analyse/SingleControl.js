@@ -7,13 +7,23 @@ class SingleControl extends Component {
         this.state = {
             linkertScale:"",
             analyseId:"",
+            projectId:"",
+            answerSample:"",
+            surveySample:"",
+            thisSurvey:"",
+            allSurvey:"",
+            allSample:"",
+            allAnswer:"",
+            surveyName:"",
+            sampleName:"",
+            sampleCheck:"",
         }
         this.onSubmit = this.onSubmit.bind(this)
     }
 
-    componentDidMount () {
+    async componentDidMount () {
         const surveyId = this.props.surveyId;
-        axios.get(`/analyse/find/` + surveyId)
+        await axios.get(`/analyse/find/` + surveyId)
           .then(response => {
               this.setState({
                   linkertScale:response.data[0].linkertScale,
@@ -23,6 +33,102 @@ class SingleControl extends Component {
           .catch((error) => {
               console.log(error);
           })
+        
+        await axios.get(`/surveys/find/` + surveyId)
+        .then(response => {
+            this.setState({
+                thisSurvey: response.data,
+                projectId: response.data.projectId,
+                surveyName: response.data.nameSurvey,
+            })                           
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+
+        const projectId = this.state.projectId
+        await axios.get(`/surveys/` + projectId)
+        .then(response => {
+            this.setState({
+                allSurvey: response.data,
+            })                        
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        
+
+        await axios.get(`/sampleGroups/` + projectId)
+        .then(response => {
+            this.setState({
+                allSample: response.data,
+            })                        
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+        
+        //คัดกลุ่มตัวอย่าง
+        let sample=[]
+        for(let i=0; i<this.state.allSurvey.length; i++){
+            if(this.state.allSurvey[i].nameSurvey === this.state.surveyName){
+                sample.push(this.state.allSurvey[i])
+            }
+        }
+        this.setState({
+            surveySample:sample
+        })
+        console.log(this.state.surveySample)
+
+        let answerSample=[]
+        for(let i=0; i<sample.length; i++){
+            let surveyId=sample[i]._id
+            axios.get(`/answers/find/` + surveyId)
+                    .then(response => {
+                        answerSample.push(response.data[0])
+                    })
+        }
+        this.setState({
+            answerSample:answerSample
+        })
+        console.log(this.state.answerSample)
+
+        let sampleName=[]
+        for(let i=0; i<sample.length; i++){
+            for(let j=0; j<this.state.allSample.length; j++){
+                if(sample[i].sampleGroupId === this.state.allSample[j]._id){
+                    sampleName.push(this.state.allSample[j].nameSampleGroup) 
+                }
+            }
+            if(sample[i].sampleGroupId === ""){
+                sampleName.push("ไม่มีกลุ่มตัวอย่าง")
+            }
+        }
+        this.setState({
+            sampleName:sampleName
+        })
+        console.log(this.state.sampleName)
+    }
+
+    handleSampleChange = event => {
+        this.setState({ sampleCheck : event.target.value })
+        let sampleId
+        let surveyId
+        for(let i=0; i<this.state.allSample.length; i++){
+            if(event.target.value === this.state.allSample[i].nameSampleGroup){
+                sampleId = this.state.allSample[i]._id
+            }
+        }
+        for(let i=0; i<this.state.allSample.length; i++){
+            if(sampleId === this.state.allSurvey[i].sampleGroupId){
+                surveyId = this.state.allSurvey[i]._id
+            }
+        }
+        
+        if(this.props.findAnswerId){
+            this.props.findAnswerId(surveyId)
+        }
     }
 
     onSubmit() {
@@ -51,8 +157,12 @@ class SingleControl extends Component {
                 <div className="container card" style={{width: '60%', marginTop: `25px`}}>
                     <div className="container-fluid">
                         <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
-                        <select className="form-control text-center" value={this.state.value} onChange={this.handleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
-                            <option value="1">ไม่มีกลุ่มตัวอย่าง</option>
+                        <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
+                            { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
+                                return (
+                                        <option key={index} value={data}>{data}</option>
+                                )
+                                }) : ""}
                         </select>
                     </div>
                 </div>

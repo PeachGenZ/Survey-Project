@@ -11,7 +11,8 @@ class Single extends Component {
     this.state = {
       survey:"",
       pageManage: "",
-      checkOwnSurvey: false
+      checkOwnSurvey: false,
+      findAnswerId:""
     }
   }
 
@@ -33,6 +34,12 @@ class Single extends Component {
     this.setState({
         pageManage: data
     })
+  }
+
+  onfindAnswerId=(surveyId)=>{
+    this.setState({
+      findAnswerId:surveyId
+    })
 }
 
 
@@ -45,14 +52,11 @@ class Single extends Component {
             <h1>ผลลัพธ์</h1>
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab tab="tab2"/>
-            <SingleControl surveyId={surveyId}/>
           </div>
           <div style={{ marginTop: '60px' }}>
             
-            <Table1 surveyId={surveyId}/>
-            <div style={{ marginLeft: '5%' }, {marginTop: '5%'}}>
-              <Bar surveyId={surveyId}/>
-            </div>
+              <Table1 surveyId={surveyId}/>
+            
           </div>
       </div>
     )

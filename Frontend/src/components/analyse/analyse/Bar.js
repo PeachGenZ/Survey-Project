@@ -6,7 +6,7 @@ class Bar extends Component {
   constructor(props){
     super(props)
     this.state = {
-      result:"",
+      resultBar:"",
       already:false,
     }
   }
@@ -16,10 +16,10 @@ class Bar extends Component {
     axios.get(`/analyse/find/` + surveyId)
       .then(response => {
           this.setState({
-              result:response.data[0].result,
+              resultBar:response.data[0].result,
               already:true
           })                           
-          //console.log(this.state.result)
+          //console.log(this.state.resultBar)
       })
       .catch((error) => {
           console.log(error);
@@ -28,9 +28,9 @@ class Bar extends Component {
   
   getLabels(){
     let labels=[]
-    if(this.state.result){
-      for(let i=0; i<this.state.result.length; i++){
-        labels.push(this.state.result[i].name)
+    if(this.state.resultBar){
+      for(let i=0; i<this.state.resultBar.length; i++){
+        labels.push(this.state.resultBar[i].name)
       }
     }
     return labels
@@ -38,10 +38,10 @@ class Bar extends Component {
 
   getData(){
     let value=[]
-    if(this.state.result){
-      for(let i=0; i<this.state.result.length; i++){
-        if(this.state.result[i].mean != null){
-          value.push(this.state.result[i].mean.toFixed(3))
+    if(this.state.resultBar){
+      for(let i=0; i<this.state.resultBar.length; i++){
+        if(this.state.resultBar[i].mean != null){
+          value.push(this.state.resultBar[i].mean.toFixed(3))
         }
       }
     }

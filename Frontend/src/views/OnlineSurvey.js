@@ -1066,49 +1066,50 @@ class OnlineSurvey extends Component {
         let description=""
         let score=this.calculate()
         let resultScore=(this.state.result ? this.resultCalculate(score) :"")
+        if(this.state.result){
+            for(let i=0; i<this.state.result.setResult[0].result.length; i++){
+                let min=parseFloat(this.state.result.setResult[0].result[i].min) 
+                let max=parseFloat(this.state.result.setResult[0].result[i].max) 
+                if(resultScore >= min && resultScore <= max){
+                    topic=this.state.result.setResult[0].result[i].topic 
+                    description=this.state.result.setResult[0].result[i].description 
 
-        for(let i=0; i<this.state.result.setResult[0].result.length; i++){
-            let min=parseFloat(this.state.result.setResult[0].result[i].min) 
-            let max=parseFloat(this.state.result.setResult[0].result[i].max) 
-            if(resultScore >= min && resultScore <= max){
-                topic=this.state.result.setResult[0].result[i].topic 
-                description=this.state.result.setResult[0].result[i].description 
+                    const userResult={
+                        topic:topic,
+                        description:description,
+                        sample:"-",
+                        date:""
+                    }
 
-                const userResult={
-                    topic:topic,
-                    description:description,
-                    sample:"-",
-                    date:""
+                    if (this.props.answer) {
+                        this.props.answer(userResult)
+                    }
                 }
-
-                if (this.props.answer) {
-                    this.props.answer(userResult)
-                }
+            }  
+            const timestamp = Date.now();
+            const result={
+                name:this.props.auth.user.firstname + " " + this.props.auth.user.lastname,
+                topic:topic,
+                sample:"-",
+                date:new Intl.DateTimeFormat('th', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
             }
-        }  
-        const timestamp = Date.now();
-        const result={
-            name:this.props.auth.user.firstname + " " + this.props.auth.user.lastname,
-            topic:topic,
-            sample:"-",
-            date:new Intl.DateTimeFormat('th', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
-        }
-        
-        let resultOld = this.state.result.userResult
-        if(resultOld !== null){
-            resultOld.push(result)
-        }else{
-            resultOld=result
-        }
-        
-        const userResult={
-            setResult:this.state.result.setResult[0],
-            userResult:resultOld
-        }
+            
+            let resultOld = this.state.result.userResult
+            if(resultOld !== null){
+                resultOld.push(result)
+            }else{
+                resultOld=result
+            }
+            
+            const userResult={
+                setResult:this.state.result.setResult[0],
+                userResult:resultOld
+            }
 
-        axios.post(`/userResult/edit/${this.state.userResultId}`, userResult)
-        .then(res => console.log(res))
-        console.log("ส่งข้อมูลแล้ว")
+            axios.post(`/userResult/edit/${this.state.userResultId}`, userResult)
+            .then(res => console.log(res))
+            console.log("ส่งข้อมูลแล้ว")
+        }
     }
 
     confirm() {

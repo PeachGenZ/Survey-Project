@@ -295,15 +295,6 @@ class Table1 extends Component {
           <div className="container card" style={{width: '60%', marginTop: `25px`}}>
               <div className="container-fluid">
                   <h3 style={{marginTop: `10px`}}>Filter<i className="fa fa-filter"/></h3>
-                  <h4 style={{marginTop:'3%'}}>กลุ่มตัวอย่าง</h4>
-                  <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
-                      { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
-                          return (
-                                  <option key={index} value={data}>{data}</option>
-                          )
-                          }) : ""}
-                  </select>
-
                   <div style={{marginTop:'3%'}}>
                     {this.state.widgetGender ?
                     <label style={{fontSize:'15px'}}>
@@ -354,6 +345,18 @@ class Table1 extends Component {
                     :""
                     }
                   </div>
+                  <hr/>
+                  <div>
+                    <h4 style={{marginTop:'3%'}}>กลุ่มตัวอย่าง</h4>
+                    <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
+                        { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
+                            return (
+                                    <option key={index} value={data}>{data}</option>
+                            )
+                            }) : ""}
+                    </select>
+                  </div>
+                  
               </div>
           </div>
           <hr/>
@@ -722,7 +725,6 @@ class Table1 extends Component {
       }
       else if(this.state.readyId){
         try {
-          console.log(this.state.analyseId)
           const analyse = {
             preProcess:preProcess,
             result:result,
@@ -748,7 +750,7 @@ class Table1 extends Component {
         
 
         <h2 className="text-center" style={{marginTop:'5%'}}>กลุ่มตัวอย่าง: {this.state.sampleCheck}</h2>
-        <h2 className="text-center">(จำนวนคำตอบ {count} แบบสอบถาม)</h2>
+        <h2 className="text-center">(จำนวนคำตอบ {count} รายการ)</h2>
           {this.showComponent()}
         <div className="box box-success with-border"  style={{marginTop:'3%'}}>
           <table className="table table-bordered" >
@@ -782,11 +784,13 @@ class Table1 extends Component {
             </tbody>
           </table>
         </div>
-        <div className="box box-success with-border" style={{marginTop:'5%'}}>
-          <h3 className="text-center" style={{marginBottom:'2%'}}>ช่วงคะแนนการแปลความ</h3>
-          {this.showLinkertScale()}
-        </div>
+        { this.state.linkertScale.length !== 0 ?
+          <div className="box box-success with-border" style={{marginTop:'5%'}}>
+            <h3 className="text-center" style={{marginBottom:'2%'}}>ช่วงคะแนนการแปลความ</h3>
+            {this.showLinkertScale()}
+          </div>:""}
         <div className="box box-success with-border" style={{marginTop:'5%',marginBottom:'15%'}}>
+          <h3 className="text-center" style={{marginBottom:'2%'}}>ข้อมูลแบบสอบถาม</h3>
           {this.showSurvey()}
         </div>
       </div>

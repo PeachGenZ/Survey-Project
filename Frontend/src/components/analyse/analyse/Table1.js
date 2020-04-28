@@ -46,12 +46,14 @@ class Table1 extends Component {
               thisSurvey: response.data,
               projectId: response.data.projectId,
               surveyName: response.data.nameSurvey,
+              sampleCheck: response.data.sampleGroupId,
           })                           
 
       })
       .catch((error) => {
           console.log(error);
       })
+      console.log(this.state.sampleCheck)
 
       axios.get(`/answers/find/` + surveyId)
       .then(response => {
@@ -85,6 +87,22 @@ class Table1 extends Component {
       .catch((error) => {
           console.log(error);
       })
+
+      await axios.get(`/sampleGroups/` + this.state.sampleCheck)
+      .then(response => {
+          this.setState({
+            sampleCheck: response.data.nameSampleGroup,
+          })                        
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+
+      if(!this.state.sampleCheck){
+        this.setState({
+          sampleCheck: "ไม่มีกลุ่มตัวอย่าง",
+        })    
+      }
 
       //คัดกลุ่มตัวอย่าง
       let sample=[]
@@ -241,7 +259,7 @@ class Table1 extends Component {
           <hr/>
           <div className="container card" style={{width: '60%', marginTop: `25px`}}>
               <div className="container-fluid">
-                  <h3 style={{marginTop: `25px`}}>กลุ่มตัวอย่าง</h3>
+                  <h3 style={{marginTop: `10px`}}>กลุ่มตัวอย่าง</h3>
                   <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
                       { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
                           return (
@@ -264,6 +282,39 @@ class Table1 extends Component {
           <hr/>
       </div> 
     )
+  }
+
+  showSurvey(){
+    let preProcess = this.preProcess()
+    let showArray=[]
+    for(var i=0; i<preProcess.length; i++){
+      let topic=""
+      let min=""
+      let max=""
+      let choice=[]
+
+      min=preProcess[i].min
+      max=preProcess[i].max
+
+      if(preProcess[i].title){
+        topic=preProcess[i].title
+      }else{
+        topic=preProcess[i].name
+      }
+      for(var j=0; j<preProcess[i].choicesArray.length; j++){
+        choice.push(
+          <p><b style={{ color: '#289e00' }}>ตัวเลือกที่ {j+1}:</b> {preProcess[i].choicesArray[j].text} ({preProcess[i].choicesArray[j].value} คะแนน) ตอบข้อนี้ {preProcess[i].choicesArray[j].select} จำนวน </p>
+        )
+      }
+
+      showArray.push(
+      <div>
+        <h4><i className="fa  fa-arrow-circle-o-right"/> คำถามที่ {i+1} {topic}</h4>
+        <p style={{fontSize:16}}>{choice}</p>
+      </div>
+      )
+    }
+    return showArray
   }
 
   getLabels(){
@@ -454,11 +505,16 @@ class Table1 extends Component {
       for(var i=0; i<preProcess.length; i++){
         let r={
           name:"",
+          min:0,
+          max:0,
           score:0,
           mean:0,
           sd:0,
           details:"",
         }
+
+        r.min = parseInt(preProcess[i].min)*this.state.amountAnswer
+        r.max = parseInt(preProcess[i].max)*this.state.amountAnswer
 
         if(preProcess[i].title){
           r.name=preProcess[i].title
@@ -529,35 +585,45 @@ class Table1 extends Component {
     return (
       <div>
         {this.showControl()}
-        <table className="table table-bordered" style={{marginTop:'2%'}}>
-          <thead>
-            <tr>
-              <th scope="col" className="text-center">ลำดับ</th>
-              <th scope="col" className="text-center">คำถาม</th>
-              <th scope="col" className="text-center">คะแนนที่ได้</th>
-              <th scope="col" className="text-center">ค่าเฉลี่ยคะแนน</th>
-              <th scope="col" className="text-center">ส่วนเบี่ยงเบนมาตรฐาน</th>
-              <th scope="col" className="text-center">แปลความ</th>
-            </tr>
-          </thead>
-          <tbody>
-          { (result != undefined) ? result.map( (data, index) => {
-            return (
-              <tr key={ index }>
-                <td className="text-center">{ index+1 }</td>
-                <td className="text-center">{data.name}</td>
-                <td className="text-center">{(data.score) ? data.score.toFixed(2) : "0"}</td>
-                <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "0"}</td>
-                <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "0"}</td>
-                <td className="text-center">{(data.details) ? data.details : "-"}</td>
-              </tr>
-            )
-          }) : <tr><td colSpan="6" className="text-center">Loading...</td></tr> }
-          </tbody>
-        </table>
+        
 
-        <div>
-          {this.showComponent()}
+        <h2 className="text-center" style={{marginTop:'5%'}}>กลุ่มตัวอย่าง: {this.state.sampleCheck}</h2>
+        <h2 className="text-center">(จำนวนคำตอบ {this.state.amountAnswer} แบบสอบถาม)</h2>
+        {this.showComponent()}
+        <div className="box box-success with-border" style={{marginTop:'2%'}}>
+          {this.showSurvey()}
+        </div>
+        <div className="box box-success with-border"  style={{marginTop:'3%'}}>
+          <table className="table table-bordered" style={{marginBottom:'15%'}}>
+            <thead>
+              <tr>
+                <th scope="col" className="text-center">ลำดับ</th>
+                <th scope="col" className="text-center">คำถาม</th>
+                <th scope="col" className="text-center">คะแนนต่ำสุด</th>
+                <th scope="col" className="text-center">คะแนนสูงสุด</th>
+                <th scope="col" className="text-center">คะแนนที่ได้</th>
+                <th scope="col" className="text-center">ค่าเฉลี่ยคะแนน</th>
+                <th scope="col" className="text-center">ส่วนเบี่ยงเบนมาตรฐาน</th>
+                <th scope="col" className="text-center">แปลความ</th>
+              </tr>
+            </thead>
+            <tbody>
+            { (result != undefined) ? result.map( (data, index) => {
+              return (
+                <tr key={ index }>
+                  <td className="text-center">{ index+1 }</td>
+                  <td className="text-center">{data.name}</td>
+                  <td className="text-center">{(data.min) ? data.min.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.max) ? data.max.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.score) ? data.score.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.details) ? data.details : "-"}</td>
+                </tr>
+              )
+            }) : <tr><td colSpan="6" className="text-center">Loading...</td></tr> }
+            </tbody>
+          </table>
         </div>
       </div>
 

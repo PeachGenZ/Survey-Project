@@ -126,7 +126,7 @@ class Table2 extends Component {
           }
       }
       this.setState({
-          sampleName:sampleName
+        sampleName:sampleName
       })
 
       //get answer มานับคะแนน
@@ -153,12 +153,14 @@ class Table2 extends Component {
       let preProcess = this.preProcess()
       let preResult = ""
       let result = ""
+      let countAnswer = this.state.answerSample[i].amountAnswer
       let answer = this.state.answerSample[i].answerUsers
       preResult = this.calculateScore(preProcess,answer)
       result = this.getResult(preResult)
       resultArray.push(
         <div style={{marginTop:'5%'}}>
           <h2 className="text-center">กลุ่มตัวอย่าง: {this.state.sampleName[i]}</h2>
+          <h2 className="text-center">(จำนวนคำตอบ {countAnswer} แบบสอบถาม)</h2>
           <table className="table table-bordered" style={{marginTop:'1%'}}>
             <thead>
               <tr>
@@ -265,17 +267,48 @@ class Table2 extends Component {
       preResult = this.calculateScore(preProcess,answer)
       result = this.getResult(preResult)
       value = this.getValue(result)
-      resultArray.push(
-        {
-          label: `${this.state.sampleName[i]}`,
-          backgroundColor: 'rgba(0, 168, 255,0.5)',
-          borderColor: 'rgba(0, 142, 226)',
-          borderWidth: 1,
-          hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-          hoverBorderColor: 'rgba(255,99,132,1)',
-          data:value
-        },
-      )
+      
+      if(i===0){
+        resultArray.push(
+          {
+            label: `${this.state.sampleName[i]}`,
+            backgroundColor: 'rgba(0, 168, 255,0.5)',
+            borderColor: 'rgba(0, 142, 226)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+            hoverBorderColor: 'rgba(255,99,132,1)',
+            data:value
+          },
+        )
+      }
+
+      if(i===1){
+        resultArray.push(
+          {
+            label: `${this.state.sampleName[i]}`,
+            backgroundColor: 'rgba(255, 184, 31, 1)',
+            borderColor: 'rgba(255, 174, 0, 1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(255, 190, 51, 1)',
+            hoverBorderColor: 'rgba(255, 177, 10, 1)',
+            data:value
+          },
+        )
+      }
+
+      if(i===2){
+        resultArray.push(
+          {
+            label: `${this.state.sampleName[i]}`,
+            backgroundColor: 'rgba(191, 255, 41, 1)',
+            borderColor: 'rgba(178, 255, 0, 1)',
+            borderWidth: 1,
+            hoverBackgroundColor: 'rgba(189, 255, 36, 1)',
+            hoverBorderColor: 'rgba(180, 255, 5, 1)',
+            data:value
+          },
+        )
+      }
     }
 
     const data = {
@@ -463,11 +496,11 @@ class Table2 extends Component {
     let preProcess = this.preProcess()
     this.getTableData()
     return (
-      <div>
+      <div style={{marginBottom:'15%'}}>
           {this.showControl()}
-          {this.getTableData()}
-        <div>
           {this.showComponent()}
+        <div>
+          {this.getTableData()}
         </div>
       </div>
 

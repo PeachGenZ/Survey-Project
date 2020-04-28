@@ -47,7 +47,7 @@ class Informations extends Component {
     const surveyId = this.props.match.params.surveyId;
     return(
       <div>
-        <h3>จำนวนผู้ตอบแบบสอบถามทั้งหมด {this.state.answers.amountAnswer} คน</h3>
+        <h3>จำนวนผู้ตอบแบบสอบถามทั้งหมด {this.state.answers.amountAnswer} คำตอบ</h3>
         <div style={{ marginTop: '3%' }}>
           <img src={Male} width="10%" height="10%"/>
           <img src={Female} width="11%" height="11%" style={{ marginLeft: '30%' }}/>

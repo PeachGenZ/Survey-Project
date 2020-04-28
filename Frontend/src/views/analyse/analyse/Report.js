@@ -43,31 +43,31 @@ class Report extends Component {
             <h2>แบบสอบถาม{this.state.survey.nameSurvey}</h2>
             <Tab tab="tab4"/>
           </div>
-          <div>
-          <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col" className="text-center">ลำดับ</th>
-              <th scope="col" className="text-center">ชื่อ</th>
-              <th scope="col" className="text-center">กลุ่มตัวอย่าง</th>
-              <th scope="col" className="text-center">วัน/เดือน/ปี เวลา</th>
-              <th scope="col" className="text-center">ผลลัพธ์</th>
-            </tr>
-          </thead>
-          <tbody>
-          { (this.state.report) ? this.state.report.map( (data, index) => {
-            return (
-              <tr key={ index }>
-                <td className="text-center">{ index+1 }</td>
-                <td className="text-center">{data.name}</td>
-                <td className="text-center">{data.sample}</td>
-                <td className="text-center">{data.date}</td>
-                <td className="text-center">{data.topic}</td>
+          <div className="box box-success with-border">
+            <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col" className="text-center">ลำดับ</th>
+                <th scope="col" className="text-center">ชื่อ</th>
+                <th scope="col" className="text-center">กลุ่มตัวอย่าง</th>
+                <th scope="col" className="text-center">วัน/เดือน/ปี เวลา</th>
+                <th scope="col" className="text-center">ผลลัพธ์</th>
               </tr>
-            )
-          }) : <tr><td colSpan="6" className="text-center">ไม่มีข้อมูล...</td></tr> }
-          </tbody>
-          </table>
+            </thead>
+            <tbody>
+            { (this.state.report) ? this.state.report.map( (data, index) => {
+              return (
+                <tr key={ index }>
+                  <td className="text-center">{ index+1 }</td>
+                  <td className="text-center">{data.name}</td>
+                  <td className="text-center">{data.sample}</td>
+                  <td className="text-center">{data.date}</td>
+                  <td className="text-center">{data.topic}</td>
+                </tr>
+              )
+            }) : <tr><td colSpan="6" className="text-center">ไม่มีข้อมูล...</td></tr> }
+            </tbody>
+            </table>
           </div>
       </div>
     )

@@ -38,7 +38,7 @@ class DataPie extends Component {
         }
 
         for(let j=0; j<this.state.result[i].choicesArray.length; j++){
-          choices.push(this.state.result[i].choicesArray[j].text)
+          choices.push(`${this.state.result[i].choicesArray[j].text}(${this.state.result[i].choicesArray[j].select})`)
           select.push(this.state.result[i].choicesArray[j].select)
         }
         
@@ -52,14 +52,14 @@ class DataPie extends Component {
               '#FFCE56',
               '#69ff6c',
               '#ffb27a',
-              '#9fb27a',
+              '#d52eff',
               ],
               hoverBackgroundColor: [
               '#FF6384',
               '#36A2EB',
               '#FFCE56',
               '#69ff6c',
-              '#ffb27a',
+              '#d52eff',
               ]
           }]
         };

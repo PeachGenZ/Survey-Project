@@ -399,6 +399,7 @@ class Table1 extends Component {
                             }) : ""}
                                     <option value="ทั้งหมด">ทั้งหมด</option>
                     </select>
+                    <hr/>
           </div> :""
           }
       </div> 

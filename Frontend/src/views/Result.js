@@ -5,10 +5,16 @@ export default class Result extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            survey: {},
+            survey: "",
             project: [],
             already: false,
+            names: [],
+            members: [],
+            frequency: [],
+            listTimeToDo: [],
             dateToDo: [],
+            checkListTime: false,
+            follower: [],
             ownSurvey: true,
             report:""
         };
@@ -26,8 +32,9 @@ export default class Result extends Component {
             .then(response => {
                 this.setState({
                     survey: response.data,
+                    amountMember: response.data.names.length,
+                    names: response.data.names
                 })
-                console.log(this.state.survey);
 
             })
             .catch((error) => {
@@ -47,6 +54,54 @@ export default class Result extends Component {
                     console.log(error);
                 })
         }
+        
+        await axios.get('/frequency/find/' + surveyId)
+        .then(response => {
+            this.setState({
+                frequency: response.data,
+                listTimeToDo: response.data[0].listTimeToDo
+            })
+            console.log(this.state.frequency);
+            console.log(this.state.listTimeToDo);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+        if (await this.state.frequency[0] !== undefined) {
+            var date = []
+            this.state.listTimeToDo.map(dates => {
+                date = date.concat(dates.day + "/" + dates.month + "/" + dates.year);
+            })
+            this.setState({
+                listTimeToDo: date,
+                checkListTime: true
+            })
+            console.log(this.state.listTimeToDo);
+        }
+        if (await this.state.survey !== undefined) {
+            axios.get('/followResults/findS/' + surveyId)
+                .then(response => {
+                    this.setState({
+                        follower: response.data,
+                    })
+                    console.log(this.state.follower);
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+
+        await axios.get(`/userResult/find/` + surveyId)
+        .then(response => {
+            this.setState({
+                report: response.data[0].userResult
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
         await axios.get(`/projects/find/` + this.state.survey.userId)
             .then(response => {
@@ -59,16 +114,6 @@ export default class Result extends Component {
             .catch((error) => {
                 console.log(error);
             })
-
-        axios.get(`/userResult/find/` + surveyId)
-        .then(response => {
-            this.setState({
-                report: response.data[0].userResult
-            })
-        })
-        .catch((error) => {
-            console.log(error);
-        })
     }
 
     shareTo() {
@@ -143,6 +188,98 @@ export default class Result extends Component {
         if (this.state.survey.status === "ONLINE") return <button className="btn btn-success btn-sm" onClick={() => window.location = "/online-survey/" + this.state.survey._id}>ทำแบบสอบถาม</button>
         else if (this.state.survey.status === "PAUSE") return <button className="btn btn-success btn-sm" disabled>ทำแบบสอบถาม</button>
         else if (this.state.survey.status === "FINISH") return ""
+    }
+
+    showTh() {
+        return (
+            this.state.listTimeToDo.map(date => {
+                return (
+                    <th>{date}</th>
+                )
+            })
+        )
+    }
+
+    showRow() {
+        return (
+            this.state.follower.map((user, index) => {
+                return (
+                    <tr>
+                        <th scope="row">{this.showName(index)}</th>
+                        {this.showTD(index)}
+                    </tr>
+                )
+            })
+        )
+    }
+
+    showName(index) {
+        return (
+            this.state.members.map(mem => {
+                if (mem._id === this.state.follower[index].userId) {
+                    return mem.firstname + " " + mem.lastname;
+                }
+            })
+        )
+    }
+
+    showTable() {
+        return (
+            <div>
+                <section className="content-header">
+                    <h1>
+                        <i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey} {this.showStatus()}
+                    </h1>
+                    {this.state.ownSurvey ?
+                        <ol className="breadcrumb">
+                            <li ><a href="/requests"><i className="fa fa-envelope-o" /> คำร้องขอ</a></li>
+                            <li ><a onClick={this.goToProject.bind(this)}><i className="fa fa-folder-o" /> {this.state.project.nameProject}</a></li>
+                            <li className="active"><i className="fa fa-file-text-o" /> {this.state.survey.nameSurvey}</li>
+                        </ol>
+                        : ""
+                    }
+                </section>
+                <br />
+                <section className="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">ติดตามผลการทำแบบสอบถาม</h3>
+                                </div>
+                                <div class="box-body">
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                {this.state.checkListTime ? this.showTh() : ""}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {this.state.checkListTime ? this.showRow() : ""}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        )
+    }
+
+    showTD(index) {
+        return (
+            this.state.listTimeToDo.map(dates => {
+                var check = false;
+                this.state.follower[index].follow.map((date, i) => {
+                    if (dates === date) {
+                        check = true;
+                    }
+                })
+                if (check) return <td>/</td>
+                else return <td>-</td>
+            })
+        )
     }
 
     showComponent(){

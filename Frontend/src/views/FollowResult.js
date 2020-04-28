@@ -27,7 +27,6 @@ class FollowResult extends Component {
 
     async componentDidMount() {
         const surveyId = this.props.surveyId;
-
         await axios.get(`/surveys/find/` + surveyId)
             .then(response => {
                 this.setState({

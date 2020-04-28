@@ -17,6 +17,7 @@ class Table1 extends Component {
         answers:"",
         amountAnswer:"",
         linkertScale:"",
+        frequency:"",
 
         projectId:"",
         answerSample:"",
@@ -28,6 +29,7 @@ class Table1 extends Component {
         surveyName:"",
         sampleName:"",
         sampleCheck:"",
+        dateCheck:"",
         noSampleId:"",
         resultBar:"",
         already:false,
@@ -47,6 +49,7 @@ class Table1 extends Component {
         single:true,
         marry:true,
         separated:true,
+
     }
     this.onSubmit = this.onSubmit.bind(this)
   }
@@ -137,6 +140,17 @@ class Table1 extends Component {
           sampleCheck: "ไม่มีกลุ่มตัวอย่าง",
         })    
       }
+
+      await axios.get(`/frequency/find/` + surveyId)
+        .then(response => {
+          this.setState({
+            frequency:response.data[0].listTimeToDo
+          })                           
+
+      })
+      .catch((error) => {
+          console.log(error);
+      })
 
       //คัดกลุ่มตัวอย่าง
       let sample=[]
@@ -263,6 +277,11 @@ class Table1 extends Component {
     }
   }
 
+  handleDateChange = event => {
+    this.setState({ dateCheck: event.target.value })
+    console.log(this.state.dateCheck)
+  }
+
   handleCheckboxMale = event => {
     this.setState({ male: event.target.checked })
   }
@@ -271,7 +290,16 @@ class Table1 extends Component {
     this.setState({ female: event.target.checked })
   }
 
+  getFrequencies(){
+    let date=[]
+    for(let i=0; i<this.state.frequency.length; i++){
+      date.push(`${this.state.frequency[i].day}-${this.state.frequency[i].month}-${this.state.frequency[i].year}`)
+    }
+    return date
+  }
+
   showControl() {
+    let listToDo=this.getFrequencies()
     return (
       <div className="text-center">
           <div className="container" style={{width: '60%', marginTop: `25px`}}>
@@ -292,10 +320,10 @@ class Table1 extends Component {
               </form>
           </div>
           <hr/>
-          <div className="container card" style={{width: '60%', marginTop: `25px`}}>
+          <div className="container card" style={{width: '100%', marginTop: `25px`}}>
               <div className="container-fluid">
-                  <h3 style={{marginTop: `10px`}}>Filter<i className="fa fa-filter"/></h3>
-                  <div style={{marginTop:'3%'}}>
+                  <h3 style={{marginTop: `1%`}}>Filter<i className="fa fa-filter"/></h3>
+                  <div style={{marginTop:'2%'}}>
                     {this.state.widgetGender ?
                     <label style={{fontSize:'15px'}}>
                       <h4>เพศ</h4>
@@ -307,7 +335,7 @@ class Table1 extends Component {
                     }
                   </div>
 
-                  <div style={{marginTop:'3%'}}>
+                  <div style={{marginTop:'1%'}}>
                     {this.state.widgetGender ?
                     <label style={{fontSize:'15px'}}>
                       <h4>อายุ</h4>
@@ -316,13 +344,13 @@ class Table1 extends Component {
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age2429} onChange={this.handleCheckboxStatus}/> 24-29 ปี
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3035} onChange={this.handleCheckboxStatus}/> 30-35 ปี
-                      <br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3641} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4247} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4853} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
-                      <br/>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age5460} onChange={this.handleCheckboxStatus}/> 54-60 ปี
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
                       <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age60} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
@@ -332,7 +360,7 @@ class Table1 extends Component {
                     }
                   </div>
                   
-                  <div style={{marginTop:'3%'}}>
+                  <div style={{marginTop:'1%'}}>
                     {this.state.widgetGender ?
                     <label style={{fontSize:'15px'}}>
                       <h4>สถานภาพ</h4>
@@ -360,6 +388,19 @@ class Table1 extends Component {
               </div>
           </div>
           <hr/>
+          {this.state.frequency.length !== 0 ?
+          <div>
+            <h4 style={{marginTop:'3%'}}>กำหนดวันที่ต้องการ</h4>
+                    <select className="form-control text-center" value={this.state.dateCheck} onChange={this.handleDateChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
+                        { (listToDo) ? listToDo.map( (data, index) => {
+                            return (
+                                    <option key={index} value={data}>{data}</option>
+                            )
+                            }) : ""}
+                                    <option value="ทั้งหมด">ทั้งหมด</option>
+                    </select>
+          </div> :""
+          }
       </div> 
     )
   }
@@ -561,31 +602,33 @@ class Table1 extends Component {
       for(var i = 0; i < result.length; i++) {
         for(var j = 0; j < result[i].choicesArray.length; j++){
           for(var k = 0; k < this.state.answers.length; k++){
-            if(this.state.male === true){
-              if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
-                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                  result[i].choicesArray[j].select++
-                }
-              }
-              else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
-                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+            if(this.state.dateCheck === this.state.answers[k].noFrequency || !this.state.answers[k].noFrequency ||this.state.frequency.length === 0){
+              if(this.state.male === true){
+                if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
+                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
                     result[i].choicesArray[j].select++
                   }
                 }
-              }
-            }
-
-            if(this.state.female === true){
-              if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
-                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                  result[i].choicesArray[j].select++
+                else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
+                  for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                    if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                      result[i].choicesArray[j].select++
+                    }
+                  }
                 }
               }
-              else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
-                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+          
+              if(this.state.female === true){
+                if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
+                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
                     result[i].choicesArray[j].select++
+                  }
+                }
+                else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
+                  for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                    if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                      result[i].choicesArray[j].select++
+                    }
                   }
                 }
               }
@@ -616,14 +659,16 @@ class Table1 extends Component {
     let count = 0
       if(this.state.answers){
         for(var i = 0; i < this.state.answers.length; i++){
-          if(this.state.male === true){
-            if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
-              count++;
+          if(this.state.dateCheck === this.state.answers[i].noFrequency || !this.state.answers[i].noFrequency ||this.state.frequency.length === 0 || this.state.dateCheck === "ทั้งหมด"){
+            if(this.state.male === true){
+              if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
+                count++;
+              }
             }
-          }
-          if(this.state.female === true){
-            if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
-              count++
+            if(this.state.female === true){
+              if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
+                count++
+              }
             }
           }
         }

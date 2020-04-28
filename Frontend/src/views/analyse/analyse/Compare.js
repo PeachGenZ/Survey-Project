@@ -40,7 +40,6 @@ class Compare extends Component {
             
           </div>
           <div style={{ marginTop: '60px' }}>
-            <h1 className="text-center">กลุ่มตัวอย่างที่ 1</h1>
             <Table2 surveyId={surveyId}/>
           </div>
       </div>

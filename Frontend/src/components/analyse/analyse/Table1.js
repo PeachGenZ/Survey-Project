@@ -31,6 +31,11 @@ class Table1 extends Component {
         noSampleId:"",
         resultBar:"",
         already:false,
+        count:0,
+
+        widgetGender:"",
+        male:true,
+        female:true,
     }
     this.onSubmit = this.onSubmit.bind(this)
   }
@@ -53,7 +58,7 @@ class Table1 extends Component {
       .catch((error) => {
           console.log(error);
       })
-      console.log(this.state.sampleCheck)
+
 
       axios.get(`/answers/find/` + surveyId)
       .then(response => {
@@ -61,6 +66,7 @@ class Table1 extends Component {
             answerId:response.data[0]._id,
             answers:response.data[0].answerUsers,
             amountAnswer:response.data[0].amountAnswer,
+            widgetGender:response.data[0].answerUsers[0].resultAsString.widgetGender,
           })
       })
       .catch((error) => {
@@ -246,6 +252,14 @@ class Table1 extends Component {
     }
   }
 
+  handleCheckboxMale = event => {
+    this.setState({ male: event.target.checked })
+  }
+
+  handleCheckboxFemale = event => {
+    this.setState({ female: event.target.checked })
+  }
+
   showControl() {
     return (
       <div className="text-center">
@@ -257,19 +271,6 @@ class Table1 extends Component {
               </div>
           </div>
           <hr/>
-          <div className="container card" style={{width: '60%', marginTop: `25px`}}>
-              <div className="container-fluid">
-                  <h3 style={{marginTop: `10px`}}>กลุ่มตัวอย่าง</h3>
-                  <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
-                      { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
-                          return (
-                                  <option key={index} value={data}>{data}</option>
-                          )
-                          }) : ""}
-                  </select>
-              </div>
-          </div>
-          <hr/>
           <div className="container card" style={{width: '60%', marginTop: `25px`, magin:'auto'}}>
               <form onSubmit={this.onSubmit}>
                   <h3 style={{marginTop: `25px`}}>แปลความข้อมูล</h3>
@@ -278,6 +279,65 @@ class Table1 extends Component {
                   <p style={{marginTop:'1%'}}>ผลลัพธ์ที่บันทึกไว้: {this.state.linkertScale + "  "}  </p>
                   <button className="btn btn-success btn-lg" style={{margin: `15px`}} >ยืนยัน</button>
               </form>
+          </div>
+          <hr/>
+          <div className="container card" style={{width: '60%', marginTop: `25px`}}>
+              <div className="container-fluid">
+                  <h3 style={{marginTop: `10px`}}>Filter<i className="fa fa-filter"/></h3>
+                  <h4 style={{marginTop:'3%'}}>กลุ่มตัวอย่าง</h4>
+                  <select className="form-control text-center" value={this.state.sampleCheck} onChange={this.handleSampleChange} style={{width: '25%', margin:'auto', textAlign:'center'}}>
+                      { (this.state.sampleName) ? this.state.sampleName.map( (data, index) => {
+                          return (
+                                  <option key={index} value={data}>{data}</option>
+                          )
+                          }) : ""}
+                  </select>
+
+                  <h4 style={{marginTop:'3%'}}>เพศ</h4>
+                  {this.state.widgetGender ?
+                  <label style={{fontSize:'15px'}}>
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.male} onChange={this.handleCheckboxMale}/> ชาย 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.female} onChange={this.handleCheckboxFemale}/> หญิง
+                  </label> 
+                  :""
+                  }
+
+                  <h4 style={{marginTop:'3%'}}>อายุ</h4>
+                  {this.state.widgetGender ?
+                  <label style={{fontSize:'15px'}}>
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 24-29 ปี
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 30-35 ปี
+                    <br/>
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
+                    <br/>
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 54-60 ปี
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
+
+                  </label> 
+                  :""
+                  }
+
+                  <h4 style={{marginTop:'3%'}}>สถานภาพ</h4>
+                  {this.state.widgetGender ?
+                  <label style={{fontSize:'15px'}}>
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> โสด 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> สมรส
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
+                  </label> 
+                  :""
+                  }
+              </div>
           </div>
           <hr/>
       </div> 
@@ -361,6 +421,7 @@ class Table1 extends Component {
             },
         ]
     };
+
     return (
       <div className="chart">
           <h2>แผนภูมิที่พล็อตจากค่าเฉลี่ย</h2>
@@ -451,23 +512,77 @@ class Table1 extends Component {
       for(var i = 0; i < result.length; i++) {
         for(var j = 0; j < result[i].choicesArray.length; j++){
           for(var k = 0; k < this.state.answers.length; k++){
-            if(result[i].type === 'radiogroup'){
-              if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                result[i].choicesArray[j].select++
-              }
-            }
-            else if(result[i].type === 'checkbox'){
-              for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+            if(this.state.male === true){
+              if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
+                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
                   result[i].choicesArray[j].select++
                 }
               }
+              else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
+                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                    result[i].choicesArray[j].select++
+                  }
+                }
+              }
             }
+
+            if(this.state.female === true){
+              if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
+                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                  result[i].choicesArray[j].select++
+                }
+              }
+              else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
+                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                    result[i].choicesArray[j].select++
+                  }
+                }
+              }
+            }
+
+            /*else{
+              if(result[i].type === 'radiogroup'){
+                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                  result[i].choicesArray[j].select++
+                }
+              }
+              else if(result[i].type === 'checkbox'){
+                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                    result[i].choicesArray[j].select++
+                  }
+                }
+              }
+              count++
+            }*/
           }
         }
       }
     }
   }
+
+  count(){
+    let count = 0
+      if(this.state.answers){
+        for(var i = 0; i < this.state.answers.length; i++){
+          if(this.state.male === true){
+            if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
+              count++;
+            }
+          }
+          if(this.state.female === true){
+            if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
+              count++
+            }
+          }
+        }
+      }
+      return count 
+    }
+      
+   
 
   findLinkertScale(choiceMin,choiceMax){
     let resultArray=[]
@@ -580,6 +695,7 @@ class Table1 extends Component {
   render(){
     let preProcess = this.preProcess()
     let result = this.getResult(preProcess)
+    let count = this.count(preProcess)
     {(this.state.answers) ? this.sendData(preProcess,result) : console.log("Not send data")}
 
     return (
@@ -588,13 +704,10 @@ class Table1 extends Component {
         
 
         <h2 className="text-center" style={{marginTop:'5%'}}>กลุ่มตัวอย่าง: {this.state.sampleCheck}</h2>
-        <h2 className="text-center">(จำนวนคำตอบ {this.state.amountAnswer} แบบสอบถาม)</h2>
-        {this.showComponent()}
-        <div className="box box-success with-border" style={{marginTop:'2%'}}>
-          {this.showSurvey()}
-        </div>
+        <h2 className="text-center">(จำนวนคำตอบ {count} แบบสอบถาม)</h2>
+          {this.showComponent()}
         <div className="box box-success with-border"  style={{marginTop:'3%'}}>
-          <table className="table table-bordered" style={{marginBottom:'15%'}}>
+          <table className="table table-bordered" >
             <thead>
               <tr>
                 <th scope="col" className="text-center">ลำดับ</th>
@@ -624,6 +737,9 @@ class Table1 extends Component {
             }) : <tr><td colSpan="6" className="text-center">Loading...</td></tr> }
             </tbody>
           </table>
+        </div>
+        <div className="box box-success with-border" style={{marginTop:'5%',marginBottom:'15%'}}>
+          {this.showSurvey()}
         </div>
       </div>
 

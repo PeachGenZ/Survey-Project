@@ -33,6 +33,19 @@ class Table2 extends Component {
         already:false,
 
         widgetGender:"",
+        male:true,
+        female:true,
+        age1823:true,
+        age2429:true,
+        age3035:true,
+        age3641:true,
+        age4247:true,
+        age4853:true,
+        age5460:true,
+        age60:true,
+        single:true,
+        marry:true,
+        separated:true,
     }
     this.onSubmit = this.onSubmit.bind(this)
   }
@@ -169,6 +182,8 @@ class Table2 extends Component {
               <tr>
                 <th scope="col" className="text-center">ลำดับ</th>
                 <th scope="col" className="text-center">คำถาม</th>
+                <th scope="col" className="text-center">คะแนนต่ำสุด</th>
+                <th scope="col" className="text-center">คะแนนสูงสุด</th>
                 <th scope="col" className="text-center">คะแนนที่ได้</th>
                 <th scope="col" className="text-center">ค่าเฉลี่ยคะแนน</th>
                 <th scope="col" className="text-center">ส่วนเบี่ยงเบนมาตรฐาน</th>
@@ -181,6 +196,8 @@ class Table2 extends Component {
                 <tr key={ index }>
                   <td className="text-center">{ index+1 }</td>
                   <td className="text-center">{data.name}</td>
+                  <td className="text-center">{(data.min) ? data.min.toFixed(2)*countAnswer : "0"}</td>
+                  <td className="text-center">{(data.max) ? data.max.toFixed(2)*countAnswer : "0"}</td>
                   <td className="text-center">{(data.score) ? data.score.toFixed(2) : "0"}</td>
                   <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "0"}</td>
                   <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "0"}</td>
@@ -237,51 +254,56 @@ class Table2 extends Component {
               <div className="container-fluid">
                   <h3 style={{marginTop: `10px`}}>Filter<i className="fa fa-filter"/></h3>
                   
-                  {this.state.widgetGender ?
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>เพศ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.male} onChange={this.handleCheckboxMale}/> ชาย 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.female} onChange={this.handleCheckboxFemale}/> หญิง
+                    </label> 
+                    :""
+                    }
+                  </div>
+
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>อายุ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age1823} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age2429} onChange={this.handleCheckboxStatus}/> 24-29 ปี
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3035} onChange={this.handleCheckboxStatus}/> 30-35 ปี
+                      <br/>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3641} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4247} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4853} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
+                      <br/>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age5460} onChange={this.handleCheckboxStatus}/> 54-60 ปี
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age60} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
+
+                    </label> 
+                    :""
+                    }
+                  </div>
                   
-                  <label style={{fontSize:'15px'}}>
-                    <h4 style={{marginTop:'3%'}}>เพศ</h4>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> ชาย 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> หญิง
-                  </label> 
-                  :""
-                  }
-
-                  <h4 style={{marginTop:'3%'}}>อายุ</h4>
-                  {this.state.widgetGender ?
-                  <label style={{fontSize:'15px'}}>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 24-29 ปี
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 30-35 ปี
-                    <br/>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
-                    <br/>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 54-60 ปี
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
-
-                  </label> 
-                  :""
-                  }
-
-                  <h4 style={{marginTop:'3%'}}>สถานภาพ</h4>
-                  {this.state.widgetGender ?
-                  <label style={{fontSize:'15px'}}>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> โสด 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> สมรส
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
-                  </label> 
-                  :""
-                  }
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>สถานภาพ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.single} onChange={this.handleCheckboxStatus}/> โสด 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.marry} onChange={this.handleCheckboxStatus}/> สมรส
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.separated} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
+                    </label> 
+                    :""
+                    }
+                  </div>
               </div>
           </div>
           <hr/>
@@ -518,11 +540,16 @@ class Table2 extends Component {
       for(var i=0; i<preProcess.length; i++){
         let r={
           name:"",
+          min:0,
+          max:0,
           score:0,
           mean:0,
           sd:0,
           details:"",
         }
+
+        r.min = parseInt(preProcess[i].min)
+        r.max = parseInt(preProcess[i].max)
 
         if(preProcess[i].title){
           r.name=preProcess[i].title

@@ -82,6 +82,7 @@ class OnlineSurvey extends Component {
             userResultId:"",
             topic:"",
             description:"",
+            sampleName:"",
         };
         this.onComplete = this.onComplete.bind(this);
         this.encryptAnswer = this.encryptAnswer.bind(this);
@@ -111,6 +112,7 @@ class OnlineSurvey extends Component {
                     eyear: response.data.openAndCloseTimes.end.year,
                     checkSurvey: true,
                     data: JSON.parse(response.data.data),
+                    sampleName: response.data.sampleGroupId,
                 })
                 console.log(this.state.survey);
                 console.log(this.state.title);
@@ -217,6 +219,23 @@ class OnlineSurvey extends Component {
             })
             console.log(this.state.checkHaveGroup);
         }
+        
+        await axios.get(`/sampleGroups/` + this.state.sampleName)
+            .then(response => {
+                this.setState({
+                    sampleName: response.data.nameSampleGroup,
+                })                        
+            })
+            
+            .catch((error) => {
+                console.log(error);
+            })
+
+            if(!this.state.sampleCheck){
+                this.setState({
+                sampleName: "-",
+                })    
+            }
     }
 
     showSurvey() {
@@ -1077,7 +1096,7 @@ class OnlineSurvey extends Component {
                     const userResult={
                         topic:topic,
                         description:description,
-                        sample:"-",
+                        sample:this.state.sampleName,
                         date:""
                     }
 
@@ -1090,7 +1109,7 @@ class OnlineSurvey extends Component {
             const result={
                 name:this.props.auth.user.firstname + " " + this.props.auth.user.lastname,
                 topic:topic,
-                sample:"-",
+                sample:this.state.sampleName,
                 date:new Intl.DateTimeFormat('th', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp),
             }
             

@@ -36,6 +36,17 @@ class Table1 extends Component {
         widgetGender:"",
         male:true,
         female:true,
+        age1823:true,
+        age2429:true,
+        age3035:true,
+        age3641:true,
+        age4247:true,
+        age4853:true,
+        age5460:true,
+        age60:true,
+        single:true,
+        marry:true,
+        separated:true,
     }
     this.onSubmit = this.onSubmit.bind(this)
   }
@@ -43,8 +54,8 @@ class Table1 extends Component {
   async componentDidMount () {
     //get survey มาเพื่อเป็นตัวตั้งต้นเทียบกับ answer
     const surveyId = this.props.surveyId;
-    await axios.get(`/surveys/find/` + surveyId)
-      .then(response => {
+      await axios.get(`/surveys/find/` + surveyId)
+        .then(response => {
           this.setState({
               survey: response.data,
               data: JSON.parse(response.data.data),
@@ -60,7 +71,7 @@ class Table1 extends Component {
       })
 
 
-      axios.get(`/answers/find/` + surveyId)
+      await axios.get(`/answers/find/` + surveyId)
       .then(response => {
           this.setState({
             answerId:response.data[0]._id,
@@ -68,6 +79,22 @@ class Table1 extends Component {
             amountAnswer:response.data[0].amountAnswer,
             widgetGender:response.data[0].answerUsers[0].resultAsString.widgetGender,
           })
+      })
+      .catch((error) => {
+          console.log(error);
+      })
+
+      await axios.get(`/analyse/find/` + surveyId)
+      .then(response => {
+          this.setState({
+              result:response.data[0],
+              linkertScale:response.data[0].linkertScale,
+              analyseId:response.data[0]._id,
+              readyId:true,
+              ready:1,
+              resultBar:response.data[0].result,
+              already:true,
+          })                           
       })
       .catch((error) => {
           console.log(error);
@@ -100,6 +127,7 @@ class Table1 extends Component {
             sampleCheck: response.data.nameSampleGroup,
           })                        
       })
+
       .catch((error) => {
           console.log(error);
       })
@@ -152,23 +180,7 @@ class Table1 extends Component {
       this.setState({
           sampleName:sampleName
       })
-
-      //get answer มานับคะแนน
-    await axios.get(`/analyse/find/` + surveyId)
-      .then(response => {
-          this.setState({
-              result:response.data[0],
-              linkertScale:response.data[0].linkertScale,
-              analyseId:response.data[0]._id,
-              readyId:true,
-              ready:1,
-              resultBar:response.data[0].result,
-              already:true,
-          })                           
-      })
-      .catch((error) => {
-          console.log(error);
-      })
+    
   }
 
   handleSampleChange = event => {
@@ -237,7 +249,6 @@ class Table1 extends Component {
       .catch((error) => {
           console.log(error);
       })
-      console.log(this.state.analyseId)
   }
 
   onSubmit() {
@@ -293,50 +304,56 @@ class Table1 extends Component {
                           }) : ""}
                   </select>
 
-                  <h4 style={{marginTop:'3%'}}>เพศ</h4>
-                  {this.state.widgetGender ?
-                  <label style={{fontSize:'15px'}}>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.male} onChange={this.handleCheckboxMale}/> ชาย 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.female} onChange={this.handleCheckboxFemale}/> หญิง
-                  </label> 
-                  :""
-                  }
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>เพศ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.male} onChange={this.handleCheckboxMale}/> ชาย 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.female} onChange={this.handleCheckboxFemale}/> หญิง
+                    </label> 
+                    :""
+                    }
+                  </div>
 
-                  <h4 style={{marginTop:'3%'}}>อายุ</h4>
-                  {this.state.widgetGender ?
-                  <label style={{fontSize:'15px'}}>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 24-29 ปี
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 30-35 ปี
-                    <br/>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
-                    <br/>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> 54-60 ปี
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>อายุ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age1823} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age2429} onChange={this.handleCheckboxStatus}/> 24-29 ปี
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3035} onChange={this.handleCheckboxStatus}/> 30-35 ปี
+                      <br/>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3641} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4247} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4853} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
+                      <br/>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age5460} onChange={this.handleCheckboxStatus}/> 54-60 ปี
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age60} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
 
-                  </label> 
-                  :""
-                  }
-
-                  <h4 style={{marginTop:'3%'}}>สถานภาพ</h4>
-                  {this.state.widgetGender ?
-                  <label style={{fontSize:'15px'}}>
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> โสด 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> สมรส
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                    <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.status} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
-                  </label> 
-                  :""
-                  }
+                    </label> 
+                    :""
+                    }
+                  </div>
+                  
+                  <div style={{marginTop:'3%'}}>
+                    {this.state.widgetGender ?
+                    <label style={{fontSize:'15px'}}>
+                      <h4>สถานภาพ</h4>
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.single} onChange={this.handleCheckboxStatus}/> โสด 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.marry} onChange={this.handleCheckboxStatus}/> สมรส
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.separated} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
+                    </label> 
+                    :""
+                    }
+                  </div>
               </div>
           </div>
           <hr/>
@@ -375,6 +392,35 @@ class Table1 extends Component {
       )
     }
     return showArray
+  }
+
+  showLinkertScale(){
+    let resultArray = []
+    let topic=""
+    
+    if(this.state.result.preProcess){
+      for(let i=0; i< this.state.result.preProcess.length; i++){
+        let result=[]
+        if(this.state.result.preProcess[i].title){
+          topic=this.state.result.preProcess[i].title
+        }else{
+          topic=this.state.result.preProcess[i].name
+        }
+
+        for(let j=0; j< this.state.result.preProcess[i].linkertScale.length; j++){
+          result.push(
+            <p>{this.state.result.preProcess[i].linkertScale[j].topic}:{this.state.result.preProcess[i].linkertScale[j].min.toFixed(2)} - {this.state.result.preProcess[i].linkertScale[j].max.toFixed(2)} </p>
+          )
+        }
+        resultArray.push(
+        <div>
+          <h4><i className="fa  fa-arrow-circle-o-right"/> คำถามที่ {i+1} {topic}</h4>
+          <p style={{fontSize:16}}>{result}</p>
+        </div>
+        )
+      }
+    }
+    return resultArray
   }
 
   getLabels(){
@@ -582,8 +628,6 @@ class Table1 extends Component {
       return count 
     }
       
-   
-
   findLinkertScale(choiceMin,choiceMax){
     let resultArray=[]
     let min = 0
@@ -628,8 +672,8 @@ class Table1 extends Component {
           details:"",
         }
 
-        r.min = parseInt(preProcess[i].min)*this.state.amountAnswer
-        r.max = parseInt(preProcess[i].max)*this.state.amountAnswer
+        r.min = parseInt(preProcess[i].min)
+        r.max = parseInt(preProcess[i].max)
 
         if(preProcess[i].title){
           r.name=preProcess[i].title
@@ -726,8 +770,8 @@ class Table1 extends Component {
                 <tr key={ index }>
                   <td className="text-center">{ index+1 }</td>
                   <td className="text-center">{data.name}</td>
-                  <td className="text-center">{(data.min) ? data.min.toFixed(2) : "0"}</td>
-                  <td className="text-center">{(data.max) ? data.max.toFixed(2) : "0"}</td>
+                  <td className="text-center">{(data.min) ? data.min.toFixed(2)*count : "0"}</td>
+                  <td className="text-center">{(data.max) ? data.max.toFixed(2)*count : "0"}</td>
                   <td className="text-center">{(data.score) ? data.score.toFixed(2) : "0"}</td>
                   <td className="text-center">{(data.mean) ? data.mean.toFixed(2) : "0"}</td>
                   <td className="text-center">{(data.sd) ? data.sd.toFixed(2) : "0"}</td>
@@ -737,6 +781,10 @@ class Table1 extends Component {
             }) : <tr><td colSpan="6" className="text-center">Loading...</td></tr> }
             </tbody>
           </table>
+        </div>
+        <div className="box box-success with-border" style={{marginTop:'5%'}}>
+          <h3 className="text-center" style={{marginBottom:'2%'}}>ช่วงคะแนนการแปลความ</h3>
+          {this.showLinkertScale()}
         </div>
         <div className="box box-success with-border" style={{marginTop:'5%',marginBottom:'15%'}}>
           {this.showSurvey()}

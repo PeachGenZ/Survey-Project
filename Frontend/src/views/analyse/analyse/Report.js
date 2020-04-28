@@ -62,7 +62,7 @@ class Report extends Component {
                   <td className="text-center">{data.name}</td>
                   <td className="text-center">{data.sample}</td>
                   <td className="text-center">{data.date}</td>
-                  <td className="text-center">{data.topic}</td>
+                  <td className="text-center"><span >{data.topic}</span></td>
                 </tr>
               )
             }) : <tr><td colSpan="6" className="text-center">ไม่มีข้อมูล...</td></tr> }

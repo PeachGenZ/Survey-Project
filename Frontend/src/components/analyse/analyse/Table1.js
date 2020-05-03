@@ -36,8 +36,11 @@ class Table1 extends Component {
         count:0,
 
         widgetGender:"",
+        widgetAges:"",
+        widgetStatus:"",
         male:true,
         female:true,
+        age18:true,
         age1823:true,
         age2429:true,
         age3035:true,
@@ -81,6 +84,8 @@ class Table1 extends Component {
             answers:response.data[0].answerUsers,
             amountAnswer:response.data[0].amountAnswer,
             widgetGender:response.data[0].answerUsers[0].resultAsString.widgetGender,
+            widgetAges:response.data[0].answerUsers[0].resultAsString.widgetAges,
+            widgetStatus:response.data[0].answerUsers[0].resultAsString.widgetStatus
           })
       })
       .catch((error) => {
@@ -285,10 +290,48 @@ class Table1 extends Component {
   handleCheckboxMale = event => {
     this.setState({ male: event.target.checked })
   }
-
   handleCheckboxFemale = event => {
     this.setState({ female: event.target.checked })
   }
+
+  handleCheckboxAge18 = event => {
+    this.setState({ age18: event.target.checked })
+  }
+  handleCheckboxAge1823 = event => {
+    this.setState({ age1823: event.target.checked })
+  }
+  handleCheckboxAge2429 = event => {
+    this.setState({ age2429: event.target.checked })
+  }
+  handleCheckboxAge3035 = event => {
+    this.setState({ age3035: event.target.checked })
+  }
+  handleCheckboxAge3641 = event => {
+    this.setState({ age3641: event.target.checked })
+  }
+  handleCheckboxAge4247 = event => {
+    this.setState({ age4247: event.target.checked })
+  }
+  handleCheckboxAge4853 = event => {
+    this.setState({ age4853: event.target.checked })
+  }
+  handleCheckboxAge5460 = event => {
+    this.setState({ age5460: event.target.checked })
+  }
+  handleCheckboxAge60 = event => {
+    this.setState({ age60: event.target.checked })
+  }
+
+  handleCheckboxSingle = event => {
+    this.setState({ single: event.target.checked })
+  }
+  handleCheckboxMarry = event => {
+    this.setState({ marry: event.target.checked })
+  }
+  handleCheckboxSeparated = event => {
+    this.setState({ separated: event.target.checked })
+  }
+
 
   getFrequencies(){
     let date=[]
@@ -339,36 +382,37 @@ class Table1 extends Component {
                     {this.state.widgetGender ?
                     <label style={{fontSize:'15px'}}>
                       <h4>อายุ</h4>
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age1823} onChange={this.handleCheckboxStatus}/> 18-23 ปี 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age18} onChange={this.handleCheckboxAge18}/> น้อยกว่า 18 ปี 
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age1823} onChange={this.handleCheckboxAge1823}/> 18-23 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age2429} onChange={this.handleCheckboxStatus}/> 24-29 ปี
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age2429} onChange={this.handleCheckboxAge2429}/> 24-29 ปี
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3035} onChange={this.handleCheckboxStatus}/> 30-35 ปี
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3035} onChange={this.handleCheckboxAge3035}/> 30-35 ปี
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3641} onChange={this.handleCheckboxStatus}/> 36-41 ปี 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age3641} onChange={this.handleCheckboxAge3641}/> 36-41 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4247} onChange={this.handleCheckboxStatus}/> 42-47 ปี 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4247} onChange={this.handleCheckboxAge4247}/> 42-47 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4853} onChange={this.handleCheckboxStatus}/> 48-53 ปี 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age4853} onChange={this.handleCheckboxAge4853}/> 48-53 ปี 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age5460} onChange={this.handleCheckboxStatus}/> 54-60 ปี
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age5460} onChange={this.handleCheckboxAge5460}/> 54-60 ปี
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age60} onChange={this.handleCheckboxStatus}/> มากกว่า 60 ปี 
-
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.age60} onChange={this.handleCheckboxAge60}/> มากกว่า 60 ปี 
                     </label> 
                     :""
                     }
                   </div>
                   
                   <div style={{marginTop:'1%'}}>
-                    {this.state.widgetGender ?
+                    {this.state.widgetStatus ?
                     <label style={{fontSize:'15px'}}>
                       <h4>สถานภาพ</h4>
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.single} onChange={this.handleCheckboxStatus}/> โสด 
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.single} onChange={this.handleCheckboxSingle}/> โสด 
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.marry} onChange={this.handleCheckboxStatus}/> สมรส
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.marry} onChange={this.handleCheckboxMarry}/> สมรส
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.separated} onChange={this.handleCheckboxStatus}/> หย่าร้าง,หม้าย,แยกกันอยู่
+                      <input type="checkbox" style={{ width: 15, height: 15 }} checked={this.state.separated} onChange={this.handleCheckboxSeparated}/> หย่าร้าง,หม้าย,แยกกันอยู่
                     </label> 
                     :""
                     }
@@ -425,7 +469,7 @@ class Table1 extends Component {
       }
       for(var j=0; j<preProcess[i].choicesArray.length; j++){
         choice.push(
-          <p><b style={{ color: '#289e00' }}>ตัวเลือกที่ {j+1}:</b> {preProcess[i].choicesArray[j].text} ({preProcess[i].choicesArray[j].value} คะแนน) ตอบข้อนี้ {preProcess[i].choicesArray[j].select} จำนวน </p>
+          <p><b style={{ color: '#289e00' }}>ตัวเลือกที่ {j+1}:</b> {preProcess[i].choicesArray[j].text} ({parseFloat(preProcess[i].choicesArray[j].value).toFixed(0)} คะแนน) ตอบข้อนี้ {preProcess[i].choicesArray[j].select} ครั้ง </p>
         )
       }
 
@@ -597,59 +641,826 @@ class Table1 extends Component {
     return resultArray
   }
 
-
   calculateScore(result){
+    let count=0
     if(this.state.answers){
       for(var i = 0; i < result.length; i++) {
         for(var j = 0; j < result[i].choicesArray.length; j++){
           for(var k = 0; k < this.state.answers.length; k++){
             if(this.state.dateCheck === this.state.answers[k].noFrequency || !this.state.answers[k].noFrequency ||this.state.frequency.length === 0){
-              if(this.state.male === true){
-                if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
-                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                    result[i].choicesArray[j].select++
+              if(this.state.male === true && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
+                if(this.state.single === true && this.state.answers[k].resultAsString.widgetStatus === "single"){
+                  if(this.state.age18 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age5460 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
                   }
                 }
-                else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "ชาย"){
-                  for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                    if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
-                      result[i].choicesArray[j].select++
+                if(this.state.marry === true && this.state.answers[k].resultAsString.widgetStatus === "marry"){
+                  if(this.state.age18 === true){
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
                     }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                }
+                if(this.state.separated === true && this.state.answers[k].resultAsString.widgetStatus === "separated"){
+                  if(this.state.age18 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age5460 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
                   }
                 }
               }
-          
-              if(this.state.female === true){
-                if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
-                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                    result[i].choicesArray[j].select++
-                  }
-                }
-                else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
-                  for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                    if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
-                      result[i].choicesArray[j].select++
-                    }
-                  }
-                }
-              }
-            }
 
-            /*else{
-              if(result[i].type === 'radiogroup'){
-                if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
-                  result[i].choicesArray[j].select++
+              if(this.state.female === true && this.state.answers[k].resultAsString.widgetGender === "หญิง"){
+                if(this.state.single === true && this.state.answers[k].resultAsString.widgetStatus === "single"){
+                  if(this.state.age18 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age5460 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
                 }
-              }
-              else if(result[i].type === 'checkbox'){
-                for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
-                  if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
-                    result[i].choicesArray[j].select++
+                if(this.state.marry === true && this.state.answers[k].resultAsString.widgetStatus === "marry"){
+                  if(this.state.age18 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age5460 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                  }
+                }
+                if(this.state.separated === true && this.state.answers[k].resultAsString.widgetStatus === "separated"){
+                  if(this.state.age18 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "low18"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age1823 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "18-23"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age2429 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "24-29"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3035 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "30-35"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age3641 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "36-41"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4247 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "42-47"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
+                  }
+                  if(this.state.age4853 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "48-53"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                      }
+                    }
+                  if(this.state.age5460 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "54-60"){
+                        for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                          if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                            result[i].choicesArray[j].select++
+                          }
+                        }
+                    }
+                  }
+                  if(this.state.age60 === true){
+                    count++
+                    if(result[i].type === 'radiogroup' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name]){
+                        result[i].choicesArray[j].select++
+                      }
+                    }
+                    else if(result[i].type === 'checkbox' && this.state.answers[k].resultAsString.widgetAges === "more60"){
+                      for(var l=0; l < this.state.answers[k].resultAsString[result[i].name].length; l++){
+                        if(result[i].choicesArray[j].value === this.state.answers[k].resultAsString[result[i].name][l]){
+                          result[i].choicesArray[j].select++
+                        }
+                      }
+                    }
                   }
                 }
               }
-              count++
-            }*/
+            }    
+            
           }
         }
       }
@@ -661,21 +1472,173 @@ class Table1 extends Component {
       if(this.state.answers){
         for(var i = 0; i < this.state.answers.length; i++){
           if(this.state.dateCheck === this.state.answers[i].noFrequency || !this.state.answers[i].noFrequency ||this.state.frequency.length === 0 || this.state.dateCheck === "ทั้งหมด"){
-            if(this.state.male === true){
-              if(this.state.answers[i].resultAsString.widgetGender === "ชาย"){
-                count++;
+            if(this.state.male === true && this.state.answers[i].resultAsString.widgetGender === "ชาย"){
+              if(this.state.single === true && this.state.answers[i].resultAsString.widgetStatus === "single"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
+              }
+              if(this.state.marry === true && this.state.answers[i].resultAsString.widgetStatus === "marry"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
+              }
+              if(this.state.separated === true && this.state.answers[i].resultAsString.widgetStatus === "separated"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
               }
             }
-            if(this.state.female === true){
-              if(this.state.answers[i].resultAsString.widgetGender === "หญิง"){
-                count++
+            if(this.state.female === true && this.state.answers[i].resultAsString.widgetGender === "หญิง"){
+              if(this.state.single === true && this.state.answers[i].resultAsString.widgetStatus === "single"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
+              }
+              if(this.state.marry === true && this.state.answers[i].resultAsString.widgetStatus === "marry"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
+              }
+              if(this.state.separated === true && this.state.answers[i].resultAsString.widgetStatus === "separated"){
+                if(this.state.age18 === true && this.state.answers[i].resultAsString.widgetAges === "low18"){
+                  count++
+                }
+                if(this.state.age1823 === true && this.state.answers[i].resultAsString.widgetAges === "18-23"){
+                  count++
+                }
+                if(this.state.age2429 === true && this.state.answers[i].resultAsString.widgetAges === "24-29"){
+                  count++
+                }
+                if(this.state.age3035 === true && this.state.answers[i].resultAsString.widgetAges === "30-35"){
+                  count++
+                }
+                if(this.state.age3641 === true && this.state.answers[i].resultAsString.widgetAges === "36-41"){
+                  count++
+                }
+                if(this.state.age4247 === true && this.state.answers[i].resultAsString.widgetAges === "42-47"){
+                  count++
+                }
+                if(this.state.age4853 === true && this.state.answers[i].resultAsString.widgetAges === "48-53"){
+                  count++
+                }
+                if(this.state.age60 === true && this.state.answers[i].resultAsString.widgetAges === "more60"){
+                  count++
+                }
               }
             }
+
+            
           }
         }
       }
       return count 
-    }
+  }
       
   findLinkertScale(choiceMin,choiceMax){
     let resultArray=[]

@@ -23,6 +23,7 @@ class Age extends Component {
   }
 
   render(){
+    let age18=0
     let age1823=0
     let age2429=0
     let age3035=0
@@ -35,6 +36,9 @@ class Age extends Component {
     let dataAge=[]
     if(this.state.answers){
       for (let i = 0; i < this.state.answers.length; i++) {
+        if(this.state.answers[i].resultAsString.widgetAges === 'low18'){
+          age18++
+        }
         if(this.state.answers[i].resultAsString.widgetAges === '18-23'){
           age1823++
         }
@@ -60,14 +64,14 @@ class Age extends Component {
           age60++
         }
       }
-      total=age1823+age2429+age3035+age3641+age4247+age4853+age5460+age60
+      total=age18+age1823+age2429+age3035+age3641+age4247+age4853+age5460+age60
       dataAge.push(
-        age1823,age2429,age3035,age3641,age4247,age4853,age5460,age60
+        age18,age1823,age2429,age3035,age3641,age4247,age4853,age5460,age60
       )
     }
 
     const data = {
-        labels: ['18 - 23 ปี', '24 - 29 ปี', '30 - 35 ปี', '36 - 41 ปี', '42 - 47 ปี', '48 - 53 ปี', '54 - 60 ปี', 'มากกว่า 60 ปี'],
+        labels: ['น้อยกว่า 18 ปี','18 - 23 ปี', '24 - 29 ปี', '30 - 35 ปี', '36 - 41 ปี', '42 - 47 ปี', '48 - 53 ปี', '54 - 60 ปี', 'มากกว่า 60 ปี'],
         datasets: [
           {
             label: 'ช่วงอายุ',
@@ -101,6 +105,11 @@ class Age extends Component {
                     </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                      <td className="text-center">น้อยกว่า 18 ปี</td>
+                      <td className="text-center">{age18}</td>
+                      <td className="text-center">{((age18/total)*100).toFixed(2)}</td>
+                    </tr>
                     <tr>
                       <td className="text-center">18 - 23</td>
                       <td className="text-center">{age1823}</td>

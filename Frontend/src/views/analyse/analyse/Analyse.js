@@ -29,6 +29,7 @@ class Analyse extends Component {
       },
       maleCalculate:"บวก",
       femaleCalculate:"บวก",
+      age18Calculate:"บวก",
       age1823Calculate:"บวก",
       age2429Calculate:"บวก",
       age3035Calculate:"บวก",
@@ -141,6 +142,10 @@ class Analyse extends Component {
     }
     if(this.state.ages){
       ages={
+        age18:{
+          score:this.refs.age18.value,
+          calculate:this.state.age18Calculate
+        },
         age1823:{
           score:this.refs.age1823.value,
           calculate:this.state.age1823Calculate
@@ -357,6 +362,17 @@ class Analyse extends Component {
                   this.state.ages ? 
                     <div>
                       <div className="input-group input-group-lg" style={{ marginTop:"1%", width:"100%"}}>
+                            <label style={{fontSize:22}}>น้อยกว่า 18 ปี</label>
+                            <span style={{fontSize:16}}> ดำเนินการโดย </span>     
+                              <select className="text-center" value={this.state.age18Calculate} onChange={this.handleAge18} style={{width: '15%', margin:'auto'}}>
+                                <option value="บวก">บวก</option>
+                                <option value="ลบ">ลบ</option>
+                                <option value="คูณ">คูณ</option>
+                                <option value="หาร">หาร</option>
+                              </select>
+                              <span> <i className="fa fa-arrow-right"/> <input type="number" placeholder="ป้อนจำนวนคะแนน" ref="age18" /> คะแนน</span>
+                      </div>
+                      <div className="input-group input-group-lg" style={{ marginTop:"1%", width:"100%"}}>
                             <label style={{fontSize:22}}>อายุ 18-23 ปี</label>
                             <span style={{fontSize:16}}> ดำเนินการโดย </span>     
                               <select className="text-center" value={this.state.age1823Calculate} onChange={this.handleAge1823} style={{width: '15%', margin:'auto'}}>
@@ -530,6 +546,9 @@ class Analyse extends Component {
   }
   handleFemale = event => {
     this.setState({ femaleCalculate : event.target.value })
+  }
+  handleAge18 = event => {
+    this.setState({ age18Calculate : event.target.value })
   }
   handleAge1823 = event => {
     this.setState({ age1823Calculate : event.target.value })
